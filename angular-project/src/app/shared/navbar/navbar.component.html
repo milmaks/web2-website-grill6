@@ -16,7 +16,7 @@
           <div *ngIf="show; then True; else False"></div>
           <ng-template #False>
           <li class="nav-item">
-            <a href="#" class="nav-link" data-toggle="dropdown" role="button"><b>Prijava&#x23F7;</b> <span class="caret"></span></a>
+            <a href="" class="nav-link" data-toggle="dropdown" role="button"><b>Prijava&#x23F7;</b><span class="caret"></span></a>
             <ul id="login-dp" class="dropdown-menu">
               <li>
                 <div class="row">
@@ -54,37 +54,27 @@
         </ng-template>
         <ng-template #True>
           <li class="nav-item">
-            <a href="#" data-toggle="dropdown" role="button"><img class="profile-img" width="50" height="50" src="../../../assets/images/profile-pic-placeholder.png"/></a>
-            <ul id="login-dp" class="dropdown-menu">
+            <a href="#" class="nav-link" data-toggle="dropdown" role="button"><b>Profil&#x23F7;</b><span class="caret"></span></a>
+            <ul id="logedin-dp" class="dropdown-menu">
               <li>
                 <div class="row">
-                    <div class="col-md-12">
-                      <div class="social-buttons">
-                      <div class="google-btn center">
-                        <div class="google-icon-wrapper">
-                          <img class="google-icon" src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"/>
-                        </div>
-                        <p class="btn-text"><b>Nastavi sa Google</b></p>
-                      </div>
+                  <div class="col-md-12">
+                    <a href="#" class="dashboard-button nav-link" role="button" >
+                    <div style="display: inline;">
+                      <img class="profile-img" width="70" height="70" src="../../../assets/images/profile-pic-placeholder.png"/>
                     </div>
-                    <div class="separator">ili se prijavi sa email adresom</div>
-                      <form class="form" [formGroup]="loginForm" accept-charset="UTF-8" id="login-nav">
-                          <div class="form-group">
-                            <label class="sr-only" for="exampleInputEmail2">Email adresa</label>
-                            <input type="email" class="form-control" formControlName="Email" placeholder="Email adresa" required>
-                          </div>
-                          <div class="form-group">
-                            <label class="sr-only" for="exampleInputPassword2">Password</label>
-                            <input type="password" class="form-control" formControlName="Password" placeholder="Password" required>
-                          </div>
-                          <div class="form-group">
-                            <button type="submit" (click)="onSubmit()" class="btn btn-primary btn-block">Prijavi se</button>
-                          </div>
-                      </form>
+                    <div style="float:right;display: inline;padding-top: 10px;">
+                      Milos Maksimovic<br>
+                      Dashboard
                     </div>
-                    <div class="bottom text-center">
-                      Nemaš nalog ? <a routerLink="register"><b>Registruj se</b></a>
-                    </div>
+                    </a>
+                  </div>
+                  <div class="separator"></div>
+                  <div class="col-md-12">
+                    <a href="" (click)="logOut()" class="dashboard-buttonbottom nav-link" role="button">
+                      <h5 style="width: fit-content;"><i style="width: auto;" class="bi bi-door-open-fill"></i>&nbsp;Odjavi se</h5>
+                    </a>
+                  </div>
                 </div>
               </li>
             </ul>

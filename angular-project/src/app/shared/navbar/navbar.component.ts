@@ -5,6 +5,7 @@ import { ToastrService } from 'ngx-toastr';
 import { Login } from '../models/login.model';
 import { Token } from '../models/token.model';
 import { UserService } from '../user.service';
+import jwt_decode from "jwt-decode";
 
 @Component({
   selector: 'app-navbar',
@@ -26,10 +27,16 @@ export class NavbarComponent implements OnInit {
   }
 
   show: boolean = false;
+  token: string = "";
 
   isSignin() {
-    if (localStorage.getItem('token') != null)
+    if (localStorage.getItem('token') != null){
       this.show = true;
+      const temp = localStorage.getItem('token');
+      this.token = temp !== null ? temp : "";
+      var decoded = jwt_decode(this.token);
+      console.log(decoded);
+    }
   }
 
   onSubmit() {
@@ -51,8 +58,15 @@ export class NavbarComponent implements OnInit {
       this.loginForm.reset();
     }
     else{
-      this.toastr.error('Didnt input email or password.', 'Log in failed.');
+      this.toastr.info('Didnt input email or password.', 'Log in failed.');
       this.loginForm.reset();
+      console.log("error")
     }
+  }
+
+  logOut(){
+    localStorage.removeItem('token');
+    this.isSignin();
+    this.router.navigateByUrl('/');
   }
 }
