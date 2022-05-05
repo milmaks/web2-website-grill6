@@ -28,14 +28,16 @@ export class NavbarComponent implements OnInit {
 
   show: boolean = false;
   token: string = "";
+  name: string = "";
+  decoded:any;
 
   isSignin() {
     if (localStorage.getItem('token') != null){
       this.show = true;
       const temp = localStorage.getItem('token');
       this.token = temp !== null ? temp : "";
-      var decoded = jwt_decode(this.token);
-      console.log(decoded);
+      this.decoded = jwt_decode(this.token);
+      this.name = this.decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"];
     }
   }
 

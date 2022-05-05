@@ -55,7 +55,7 @@ namespace Web2Project.Services
                     claims.Add(new Claim(ClaimTypes.Role, "delivery")); //Add user type to claim
                 if (user.Type == UserType.Buyer)
                     claims.Add(new Claim(ClaimTypes.Role, "buyer")); //Add user type to claim
-                claims.Add(new Claim(ClaimTypes.Email, user.Email));
+                claims.Add(new Claim(ClaimTypes.Name, user.Name + " " + user.Lastname));
 
                 //Kreiramo kredencijale za potpisivanje tokena. Token mora biti potpisan privatnim kljucem
                 //kako bi se sprecile njegove neovlascene izmene
