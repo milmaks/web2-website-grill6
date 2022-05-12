@@ -13,6 +13,11 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
+import { DashboardComponent } from './pages/dashboard/dashboard.component';
+import { BuyerComponent } from './buyer/buyer/buyer.component';
+import { AdministratorComponent } from './administrator/administrator/administrator.component';
+import { DeliveryComponent } from './delivery/delivery/delivery.component';
+import {MatExpansionModule} from '@angular/material/expansion';
 
 @NgModule({
   declarations: [
@@ -21,7 +26,11 @@ import { HttpClientModule } from '@angular/common/http';
     FooterComponent,
     HomeComponent,
     MenuComponent,
-    RegisterComponent
+    RegisterComponent,
+    DashboardComponent,
+    BuyerComponent,
+    AdministratorComponent,
+    DeliveryComponent
   ],
   imports: [
     BrowserModule,
@@ -32,7 +41,8 @@ import { HttpClientModule } from '@angular/common/http';
     }),
     BrowserAnimationsModule,
     FormsModule,
-    HttpClientModule
+    HttpClientModule,
+    MatExpansionModule
   ],
   providers: [
     UserService

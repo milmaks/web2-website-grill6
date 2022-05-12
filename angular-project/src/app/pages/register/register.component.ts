@@ -4,6 +4,8 @@ import { Router } from '@angular/router';
 import { Register } from 'src/app/shared/models/register.model';
 import { UserService } from 'src/app/shared/user.service';
 import { ToastrService } from 'ngx-toastr';
+import { ReturnStatement } from '@angular/compiler';
+import { __metadata } from 'tslib';
 
 @Component({
   selector: 'app-register',
@@ -18,11 +20,13 @@ export class RegisterComponent implements OnInit {
     Lastname: new FormControl('', Validators.required),
     BirthDate: new FormControl('', Validators.required),
     Address: new FormControl('', Validators.required),
-    Email: new FormControl('', Validators.required),
+    Email: new FormControl('', Validators.compose([Validators.required, Validators.email])),
     Type: new FormControl('', Validators.required),
-    Password: new FormControl('', [Validators.required, Validators.minLength(4)]),
+    Password: new FormControl('', Validators.compose([Validators.required, Validators.minLength(4)])),
+    passwordRep: new FormControl('', Validators.compose([Validators.required, Validators.minLength(4)]))
   });
   
+  roles = ['Potrošač', 'Dostavljač']
 
   constructor(private service: UserService, private router: Router, private toastr: ToastrService) { }
 
@@ -31,6 +35,11 @@ export class RegisterComponent implements OnInit {
 
   
   onSubmit() {
+    if(this.registerForm.invalid){
+      this.toastr.error('Invalid input, fill all fields correctly', 'Registration failed.');
+      return;
+    }
+
     let register:Register = new Register();
     register.username = this.registerForm.controls['Username'].value;
     register.name = this.registerForm.controls['Name'].value;
@@ -39,14 +48,23 @@ export class RegisterComponent implements OnInit {
     register.address = this.registerForm.controls['Address'].value;
     register.email = this.registerForm.controls['Email'].value;
     register.password = this.registerForm.controls['Password'].value;
-    register.type = this.registerForm.controls['Type'].value;
+    register.type = Number(this.registerForm.controls['Type'].value);
+    
+    if(register.password != this.registerForm.controls['passwordRep'].value){
+      this.toastr.error('Passwords doesn\'t match.', 'Registration failed.');
+      return;
+    }
     
     this.service.register(register).subscribe(
       (_data) => {
         this.router.navigateByUrl('/');
+        this.toastr.success('You are now registrated','Registration successful.')
       },
       error => {
-          this.toastr.error('Incorrect input.', 'Registration failed.');
+          if(error.status == 409)
+            this.toastr.error(error.error, 'Registration failed.');
+          else
+            this.toastr.error('Error ocured during registration. Try again', 'Registration failed.');
       }
     );
   }

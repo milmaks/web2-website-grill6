@@ -30,12 +30,19 @@ namespace Web2Project.Services
 
         public UserDto CreateUser(UserDto newUser)
         {
-            User user = _mapper.Map<User>(newUser);
-            user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
-            _dbContext.Users.Add(user);
-            _dbContext.SaveChanges();
+            try
+            {
+                User user = _mapper.Map<User>(newUser);
+                user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
+                _dbContext.Users.Add(user);
+                _dbContext.SaveChanges();
 
-            return _mapper.Map<UserDto>(user);
+                return _mapper.Map<UserDto>(user);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
         public TokenDto Login(UserLogInDto dto)

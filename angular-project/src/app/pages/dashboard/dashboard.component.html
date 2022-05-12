@@ -1,0 +1,130 @@
+<h1>Dashboard:</h1>
+<mat-accordion>
+    <mat-expansion-panel (opened)="panelOpenState = true"
+                         (closed)="panelOpenState = false">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+            Izmena profila  
+        </mat-panel-title>
+        <mat-panel-description>
+           &nbsp;&nbsp;&nbsp;{{panelOpenState ? 'skloni' : 'prikaži'}} polja za izmenu    
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+        
+      <div class="card-body p-md-3">
+        <form  [formGroup]="changeUserForm">
+
+          <div class="row">
+
+            <div class="col-sm">
+                <img width="450" src="../../../assets/images/profile-pic-placeholder.png"/>
+            </div>
+
+            <div class="col-sm">
+
+              <div class="form-outline ">
+                <input type="text" formControlName="Name" class="form-control form-control-lg" />
+                <label class="form-label" for="firstName">Ime</label>
+              </div>
+
+              <div class="form-outline ">
+                <input type="text" formControlName="Lastname" class="form-control form-control-lg" />
+                <label class="form-label" for="lastName">Prezime</label>
+              </div>
+
+              <div class="form-outline datepicker ">
+                <input type="date" formControlName="BirthDate" class="form-control form-control-lg" id="birthdayDate" />
+                <label for="birthdayDate" class="form-label">Datum rođenja</label>
+              </div>
+
+            </div>
+
+            <div class="col-sm">
+                <div class="form-outline ">
+                    <input type="text" formControlName="Username" class="form-control form-control-lg" />
+                    <label class="form-label" for="username">Korisničko ime</label>
+                 </div>
+
+                <div class="form-outline ">
+                    <input type="text" formControlName="Address" class="form-control form-control-lg" />
+                    <label class="form-label" for="homeAddress">Adresa</label>
+                </div>
+
+                <div class="form-outline">
+                    <input type="email" readonly="true" formControlName="Email" class="form-control form-control-lg" />
+                    <label class="form-label" for="emailAddress">Email</label>
+                </div>
+
+                <div class="form-outline">
+                    <input type="password" formControlName="Password" class="form-control form-control-lg" />
+                    <label class="form-label" for="password">Lozinka</label>
+                </div>
+    
+                <div class="form-outline">
+                    <input type="password" formControlName="passwordRep" class="form-control form-control-lg" />
+                    <label class="form-label" for="passwordRep">Ponovi lozinku</label>
+                </div>
+
+                <button class="btn btn-primary btn-lg" (click)="onSubmit()" type="submit" >Izmeni profil</button>
+            </div>
+          </div>
+        </form>
+  </div>
+    
+    </mat-expansion-panel>
+
+    <mat-expansion-panel (opened)="panelOpenState1 = true"
+                         (closed)="panelOpenState1 = false">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+            Promena lozinke  
+        </mat-panel-title>
+        <mat-panel-description>
+          {{panelOpenState1 ? 'skloni' : 'prikaži'}} polja za promenu    
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+        
+      <div class="card-body p-md-3">
+        <form  [formGroup]="changePasswordForm">
+            <div class="row">
+                <div class="col-sm">
+                    <div class="form-outline">
+                        <input type="password" formControlName="PasswordNew" class="form-control form-control-lg" />
+                        <label class="form-label" for="password">Nova lozinka</label>
+                    </div>
+        
+                    <div class="form-outline">
+                        <input type="password" formControlName="passwordRepNew" class="form-control form-control-lg" />
+                        <label class="form-label" for="passwordRep">Ponovi novu lozinku</label>
+                    </div>
+                </div>
+
+                <div class="col-sm">
+                    <div class="form-outline">
+                        <input type="password" formControlName="PasswordOld" class="form-control form-control-lg" />
+                        <label class="form-label" for="password">Stara lozinka</label>
+                    </div>
+        
+                    <div class="form-outline">
+                        <input type="password" formControlName="passwordRepOld" class="form-control form-control-lg" />
+                        <label class="form-label" for="passwordRep">Ponovi staru lozinku</label>
+                    </div>
+                    <button class="btn btn-primary btn-lg" (click)="onSubmitPass()" type="submit" >Izmeni lozinku</button>
+                </div>
+            </div>
+        </form>
+      </div>
+    
+    </mat-expansion-panel>
+    
+  </mat-accordion>
+  
+<div *ngIf="this.role == 'buyer'">
+    <app-buyer></app-buyer>
+</div>
+<div *ngIf="this.role == 'delivery'">
+    <app-delivery></app-delivery>
+</div>
+<div *ngIf="this.role == 'administrator'">
+    <app-administrator></app-administrator>
+</div>

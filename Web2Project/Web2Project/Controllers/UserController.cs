@@ -29,8 +29,9 @@ namespace Web2Project.Controllers
         [HttpPost]
         public IActionResult Create([FromBody] UserDto dto)
         {
-            _userService.CreateUser(dto);
-            return Ok();
+            if(_userService.CreateUser(dto) != null)
+                return Ok();
+            return StatusCode(409, $"User '{dto.Email}' already exists.");
         }
     }
 }

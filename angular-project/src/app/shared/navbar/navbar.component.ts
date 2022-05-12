@@ -51,7 +51,7 @@ export class NavbarComponent implements OnInit {
         (data : Token) => {
           localStorage.setItem('token', data.token);
           this.isSignin();
-          this.router.navigateByUrl('/');
+          this.router.navigateByUrl('/dashboard');
         },
         error => {
             this.toastr.error('Incorrect email or password.', 'Authentication failed.');
