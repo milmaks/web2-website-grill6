@@ -12,12 +12,14 @@ import { UserService } from './shared/user.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { BuyerComponent } from './buyer/buyer/buyer.component';
 import { AdministratorComponent } from './administrator/administrator/administrator.component';
 import { DeliveryComponent } from './delivery/delivery/delivery.component';
 import {MatExpansionModule} from '@angular/material/expansion';
+import { AuthInterceptor } from './auth/auth.interceptor';
+import { CookieService } from 'ngx-cookie-service';
 
 @NgModule({
   declarations: [
@@ -45,7 +47,13 @@ import {MatExpansionModule} from '@angular/material/expansion';
     MatExpansionModule
   ],
   providers: [
-    UserService
+    CookieService,
+    UserService, 
+    {
+    provide: HTTP_INTERCEPTORS,
+    useClass: AuthInterceptor,
+    multi: true,
+    }
   ],
   bootstrap: [AppComponent]
 })

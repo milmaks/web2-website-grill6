@@ -21,4 +21,12 @@ export class UserService {
   login(login:Login) : Observable<Token> {
     return this.http.post<Token>(environment.serverURL + '/api/users/login', login);
   }
+
+  changeUserInfo(changedUser:Register){
+    return this.http.post<Token>(environment.serverURL + '/api/users/change', changedUser);
+  }
+
+  getUserInfo(){
+    return this.http.get<Register>(environment.serverURL + '/api/users/user');
+  }
 }

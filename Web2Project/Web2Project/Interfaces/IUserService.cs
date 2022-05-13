@@ -9,6 +9,8 @@ namespace Web2Project.Interfaces
     public interface IUserService
     {
         UserDto CreateUser(UserDto newUser);
+        UserDto GetUser(string email);
         TokenDto Login(UserLogInDto dto);
+        TokenDto ChangeUserInfo(UserDto updatedUser);
     }
 }

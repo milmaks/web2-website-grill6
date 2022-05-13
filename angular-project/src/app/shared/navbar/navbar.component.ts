@@ -6,6 +6,7 @@ import { Login } from '../models/login.model';
 import { Token } from '../models/token.model';
 import { UserService } from '../user.service';
 import jwt_decode from "jwt-decode";
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-navbar',
