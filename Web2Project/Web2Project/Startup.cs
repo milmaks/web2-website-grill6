@@ -94,6 +94,7 @@ namespace Web2Project
             });
 
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IDeliveryService, DeliveryService>();
 
             //registracija db contexta u kontejneru zavisnosti, njegov zivotni vek je Scoped
             services.AddDbContext<SiteDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("SiteDatabase")));

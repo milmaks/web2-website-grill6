@@ -48,6 +48,17 @@ namespace Web2Project.Controllers
                 return StatusCode(409, $"User doesn\'t exist.");
         }
 
+        [HttpPost("change-password")]
+        [Authorize]
+        public IActionResult ChangeUserPassword([FromBody] UserPasswordChangeDto dto)
+        {
+            UserDto user = _userService.ChnageUserPassword(dto);
+            if (user != null)
+                return Ok();
+            else
+                return StatusCode(409, $"Old password doesn\'t match.");
+        }
+
 
         [HttpPost("change")]
         [Authorize]

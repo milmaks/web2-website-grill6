@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { Login } from '../models/login.model';
 import { Token } from '../models/token.model';
@@ -19,11 +19,23 @@ export class NavbarComponent implements OnInit {
     Password : new FormControl("", Validators.required),
   });
   
-  constructor(private service: UserService, private router: Router, private toastr: ToastrService) { }
+  constructor(private service: UserService, private router: Router, private toastr: ToastrService, route:ActivatedRoute) { 
+
+  }
 
   ngOnInit(): void {
-    if (localStorage.getItem('token') != null)
+    this.service.subscriber$.subscribe(data => {
+      this.name = data as string;
+    });
+    this.service.subscriber1$.subscribe(data => {
+      this.show = data as boolean;
+      this.isSignin();
+    });
+    
+    if (localStorage.getItem('token') != null){
       this.router.navigateByUrl('/');
+      console.log("here");
+    }
     this.isSignin();
   }
 
@@ -39,6 +51,11 @@ export class NavbarComponent implements OnInit {
       this.token = temp !== null ? temp : "";
       this.decoded = jwt_decode(this.token);
       this.name = this.decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"];
+      console.log("show true");
+    }
+    else{
+      this.show = false;
+      console.log("show");
     }
   }
 
@@ -63,7 +80,6 @@ export class NavbarComponent implements OnInit {
     else{
       this.toastr.info('Didnt input email or password.', 'Log in failed.');
       this.loginForm.reset();
-      console.log("error")
     }
   }
 

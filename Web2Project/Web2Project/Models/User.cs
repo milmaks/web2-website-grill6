@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Web2Project.Models
 {
-    public enum UserType { Administrator = 0, Delivery, Buyer}
+    public enum UserType { Administrator = 0, Buyer, Delivery }
     public class User
     {
         public string Username { get; set; }

@@ -13,6 +13,7 @@ namespace Web2Project.Mapping
         public MappingProfile()
         {
             CreateMap<User, UserDto>().ReverseMap(); //Kazemo mu da mapira User na UserDto i obrnuto
+            CreateMap<Delivery, DeliveryDto>().ReverseMap();
         }
     }
 }

@@ -52,6 +52,24 @@ namespace Web2Project.Services
             }
         }
 
+        public UserDto ChnageUserPassword(UserPasswordChangeDto dto)
+        {
+            User user = _dbContext.Users.Find(dto.Email);
+
+            if (user == null)
+                return null;
+
+            if (BCrypt.Net.BCrypt.Verify(dto.OldPassword, user.Password))
+            {
+                user.Password = BCrypt.Net.BCrypt.HashPassword(dto.NewPassword);
+                _dbContext.SaveChanges();
+
+                return _mapper.Map<UserDto>(user);
+            }
+            else
+                return null;
+        }
+
         public UserDto CreateUser(UserDto newUser)
         {
             try
@@ -59,6 +77,10 @@ namespace Web2Project.Services
                 User user = _mapper.Map<User>(newUser);
                 user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
                 _dbContext.Users.Add(user);
+
+                if (user.Type == UserType.Delivery)
+                    _dbContext.Deliveries.Add(new Delivery { Email = user.Email, Status = Status.InProgress });
+
                 _dbContext.SaveChanges();
 
                 return _mapper.Map<UserDto>(user);

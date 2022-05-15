@@ -12,5 +12,6 @@ namespace Web2Project.Interfaces
         UserDto GetUser(string email);
         TokenDto Login(UserLogInDto dto);
         TokenDto ChangeUserInfo(UserDto updatedUser);
+        UserDto ChnageUserPassword(UserPasswordChangeDto dto);
     }
 }

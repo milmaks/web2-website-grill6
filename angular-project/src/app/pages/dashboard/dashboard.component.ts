@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import jwt_decode from "jwt-decode";
 import { NgForm, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { UserService } from 'src/app/shared/user.service';
@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { Register } from 'src/app/shared/models/register.model';
 import { Token } from 'src/app/shared/models/token.model';
+import { ChangePassword } from 'src/app/shared/models/changePassword.model';
 
 @Component({
   selector: 'app-dashboard',
@@ -15,6 +16,7 @@ import { Token } from 'src/app/shared/models/token.model';
 export class DashboardComponent implements OnInit {
   panelOpenState = false;
   panelOpenState1 = false;
+  @Output() changed = new EventEmitter<string>();
 
   constructor(private service: UserService, private router: Router, private toastr: ToastrService) { }
 
@@ -58,6 +60,8 @@ export class DashboardComponent implements OnInit {
       },
       error => {
           this.toastr.error(error.error, 'Failed to get user info.');
+          localStorage.removeItem('token');
+          this.router.navigateByUrl('/');
       }
     );
     
@@ -92,7 +96,10 @@ export class DashboardComponent implements OnInit {
       (_data : Token) => {
         localStorage.setItem('token', _data.token);
         this.router.navigateByUrl('/dashboard');
-        this.toastr.success('Fields changed','Account update successful.')
+        this.toastr.success('Fields changed','Account update successful.');
+        this.service.emitData(register.name + " " + register.lastname);
+        this.changeUserForm.controls['Password'].reset();
+        this.changeUserForm.controls['passwordRep'].reset();
       },
       error => {
           if(error.status == 409)
@@ -104,7 +111,39 @@ export class DashboardComponent implements OnInit {
   }
 
   onSubmitPass(){
+    if(this.changePasswordForm.invalid){
+      this.toastr.error('Invalid input, fill all fields correctly', 'Change password failed.');
+      return;
+    }
 
+    let changepassword:ChangePassword = new ChangePassword();
+    changepassword.email = this.changeUserForm.controls['Email'].value;
+    changepassword.oldpassword = this.changePasswordForm.controls['PasswordOld'].value;
+    changepassword.newpassword = this.changePasswordForm.controls['PasswordNew'].value;
+
+    if(changepassword.oldpassword != this.changePasswordForm.controls['passwordRepOld'].value){
+      this.toastr.error('Old passwords doesn\'t match.', 'Can\'t change.');
+      return;
+    }
+
+    if(changepassword.newpassword != this.changePasswordForm.controls['passwordRepNew'].value){
+      this.toastr.error('New passwords doesn\'t match.', 'Can\'t change.');
+      return;
+    }
+
+    this.service.changeUserPassword(changepassword).subscribe(
+      (_data) => {
+        this.router.navigateByUrl('/dashboard');
+        this.toastr.success('Password changed','Account update successful.')
+        this.changePasswordForm.reset();
+      },
+      error => {
+          if(error.status == 409)
+            this.toastr.error(error.error, 'Change failed.');
+          else
+            this.toastr.error('Error ocured during change. Try again', 'Change failed.');
+      }
+    );
   }
 
 }
