@@ -7,6 +7,7 @@ import { Token } from '../models/token.model';
 import { UserService } from '../user.service';
 import jwt_decode from "jwt-decode";
 import { Observable } from 'rxjs';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-navbar',
@@ -19,7 +20,7 @@ export class NavbarComponent implements OnInit {
     Password : new FormControl("", Validators.required),
   });
   
-  constructor(private service: UserService, private router: Router, private toastr: ToastrService, route:ActivatedRoute) { 
+  constructor(private service: UserService, private router: Router, private toastr: ToastrService, route:ActivatedRoute, private sanitizer: DomSanitizer) { 
 
   }
 
@@ -43,6 +44,7 @@ export class NavbarComponent implements OnInit {
   token: string = "";
   name: string = "";
   decoded:any;
+  profilePicture:any;
 
   isSignin() {
     if (localStorage.getItem('token') != null){
@@ -51,11 +53,26 @@ export class NavbarComponent implements OnInit {
       this.token = temp !== null ? temp : "";
       this.decoded = jwt_decode(this.token);
       this.name = this.decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"];
-      console.log("show true");
+
+      if(this.decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/userdata"] === "true"){
+        this.service.getImage().subscribe(
+          (data) =>{
+            let objectURL = URL.createObjectURL(data); 
+            this.profilePicture = this.sanitizer.bypassSecurityTrustUrl(objectURL);
+          },
+          error =>{
+            console.log(error.error);
+            this.profilePicture = "../../../assets/images/profile-pic-placeholder.png";
+          }
+        )
+      }
+      else{
+        this.profilePicture = "../../../assets/images/profile-pic-placeholder.png";
+      }
+
     }
     else{
       this.show = false;
-      console.log("show");
     }
   }
 

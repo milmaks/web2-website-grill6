@@ -61,7 +61,7 @@
                   <div class="col-md-12">
                     <a routerLink="dashboard" class="dashboard-button nav-link" role="button" >
                     <div style="display: inline;">
-                      <img class="profile-img" width="70" height="70" src="../../../assets/images/profile-pic-placeholder.png"/>
+                      <img class="profile-img" width="70" height="70" [src]='this.profilePicture'/>
                     </div>
                     <div style="float:right;display: inline;padding-top: 10px;">
                       {{this.name}}<br>

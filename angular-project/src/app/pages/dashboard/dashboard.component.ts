@@ -7,6 +7,7 @@ import { ToastrService } from 'ngx-toastr';
 import { Register } from 'src/app/shared/models/register.model';
 import { Token } from 'src/app/shared/models/token.model';
 import { ChangePassword } from 'src/app/shared/models/changePassword.model';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-dashboard',
@@ -18,7 +19,7 @@ export class DashboardComponent implements OnInit {
   panelOpenState1 = false;
   @Output() changed = new EventEmitter<string>();
 
-  constructor(private service: UserService, private router: Router, private toastr: ToastrService) { }
+  constructor(private service: UserService, private router: Router, private toastr: ToastrService, private sanitizer: DomSanitizer) { }
 
   changeUserForm = new FormGroup({
     Username: new FormControl('', Validators.required),
@@ -41,6 +42,7 @@ export class DashboardComponent implements OnInit {
 
   role:string="";
   decoded:any;
+  profilePicture:any;
 
   ngOnInit(): void {
     //ucitavanje elemenata za izmenu
@@ -69,6 +71,22 @@ export class DashboardComponent implements OnInit {
     const token = temp !== null ? temp : "";
     this.decoded = jwt_decode(token);
     this.role = this.decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+
+    if(this.decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/userdata"] === "true"){
+        this.service.getImage().subscribe(
+          (data) =>{
+            let objectURL = URL.createObjectURL(data); 
+            this.profilePicture = this.sanitizer.bypassSecurityTrustUrl(objectURL);
+          },
+          error =>{
+            console.log(error.error);
+            this.profilePicture = "../../../assets/images/profile-pic-placeholder.png";
+          }
+        )
+      }
+      else{
+        this.profilePicture = "../../../assets/images/profile-pic-placeholder.png";
+      }
   }
 
   onSubmit(){

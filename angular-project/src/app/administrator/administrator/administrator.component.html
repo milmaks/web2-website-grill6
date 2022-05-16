@@ -1,1 +1,45 @@
-<p>administrator works!</p>
+<mat-accordion>
+    <mat-expansion-panel (opened)="panelOpenState = true"
+                         (closed)="panelOpenState = false">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+            Verifikacija  
+        </mat-panel-title>
+        <mat-panel-description>
+           &nbsp;&nbsp;&nbsp;{{panelOpenState ? 'skloni' : 'prikaži'}} dostupne naloge    
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+<ng-template [ngIf]="deliveryUsers.length" [ngIfElse]="noDeliveryUsers">
+    <div class="row m-0">
+        <div *ngFor="let del of deliveryUsers">
+            <div class=" d-flex align-items-center">
+                <div class="col-lg-4">
+                    <h3 >{{del.email}}</h3>
+                </div>  
+                <div class="col-lg-4">
+                    <div *ngIf="del.status == 0">
+                        <form>
+                            <button class="btn btn-primary btn-lg" style="background-color: green;" (click)="onAllow(del.email)" type="submit" >Prihvati</button>
+                            &nbsp;
+                            <button class="btn btn-primary btn-lg" style="background-color: red;" (click)="onDeny(del.email)" type="submit" >Odbij</button>
+                        </form>
+                    </div>
+                    <div *ngIf="del.status == 1">
+                        <p style="color: green;">Prihvacen</p>
+                    </div>
+                    <div *ngIf="del.status == 2">
+                        <p style="color: red;">Odbijen</p>
+                    </div>  
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-template>
+</mat-expansion-panel>
+</mat-accordion>
+
+<ng-template #noDeliveryUsers>
+
+    <h1>No delivery users exists in system.</h1>
+    
+  </ng-template>

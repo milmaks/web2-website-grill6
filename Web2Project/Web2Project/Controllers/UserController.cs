@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Web2Project.Dto;
@@ -68,6 +70,48 @@ namespace Web2Project.Controllers
             if (token != null)
                 return Ok(token);
             return StatusCode(409, $"Wrong password, try again.");
+        }
+
+        [HttpPost("image"), DisableRequestSizeLimit]
+        public IActionResult Upload()
+        {
+            try
+            {
+                var file = Request.Form.Files[0];
+                var folderName = Path.Combine("Resources", "Images");
+                var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+                if (file.Length > 0)
+                {
+                    var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+                    var fullPath = Path.Combine(pathToSave, fileName);
+                    var dbPath = Path.Combine(folderName, fileName);
+                    using (var stream = new FileStream(fullPath, FileMode.Create))
+                    {
+                        file.CopyTo(stream);
+                    }
+                    if(_userService.AddUsersPicture(file.Name,dbPath))
+                        return Ok(new { dbPath });
+                    else
+                        return BadRequest();
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex}");
+            }
+        }
+
+        [HttpGet("image")]
+        public IActionResult Download()
+        {
+            var file = Path.Combine(Directory.GetCurrentDirectory(),
+                        "Resources", "Images", "test.jpg");
+
+            return PhysicalFile(file, "image/png");
         }
     }
 }

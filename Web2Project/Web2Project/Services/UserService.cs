@@ -28,6 +28,18 @@ namespace Web2Project.Services
             _dbContext = dbContext;
         }
 
+        public bool AddUsersPicture(string email, string path)
+        {
+            User user = _dbContext.Users.Find(email);
+
+            if (user == null)
+                return false;
+
+            user.ImagePath = path;
+            _dbContext.SaveChanges();
+            return true;
+        }
+
         public TokenDto ChangeUserInfo(UserDto updatedUser)
         {
             User user = _dbContext.Users.Find(updatedUser.Email);
@@ -130,6 +142,10 @@ namespace Web2Project.Services
                 claims.Add(new Claim(ClaimTypes.Role, "buyer")); //Add user type to claim
             claims.Add(new Claim(ClaimTypes.Name, user.Name + " " + user.Lastname));
             claims.Add(new Claim(ClaimTypes.NameIdentifier, user.Email));
+            if(user.ImagePath != null)
+                claims.Add(new Claim(ClaimTypes.UserData, "true"));
+            else
+                claims.Add(new Claim(ClaimTypes.UserData, "false"));
 
             //Kreiramo kredencijale za potpisivanje tokena. Token mora biti potpisan privatnim kljucem
             //kako bi se sprecile njegove neovlascene izmene

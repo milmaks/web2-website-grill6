@@ -13,5 +13,6 @@ namespace Web2Project.Interfaces
         TokenDto Login(UserLogInDto dto);
         TokenDto ChangeUserInfo(UserDto updatedUser);
         UserDto ChnageUserPassword(UserPasswordChangeDto dto);
+        bool AddUsersPicture(string email, string path);
     }
 }

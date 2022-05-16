@@ -26,7 +26,10 @@ export class RegisterComponent implements OnInit {
     passwordRep: new FormControl('', Validators.compose([Validators.required, Validators.minLength(4)]))
   });
   
-  roles = ['Potrošač', 'Dostavljač']
+  roles = ['Potrošač', 'Dostavljač'];
+  message:string = "";
+  formData:FormData = new FormData();
+  files:File[] = [];
 
   constructor(private service: UserService, private router: Router, private toastr: ToastrService) { }
 
@@ -57,6 +60,12 @@ export class RegisterComponent implements OnInit {
     
     this.service.register(register).subscribe(
       (_data) => {
+        if (this.files.length === 0) {
+          return;
+        }
+        else{
+          this.uploadFile(this.files, register.email);
+        }
         this.router.navigateByUrl('/');
         this.toastr.success('You are now registrated','Registration successful.')
       },
@@ -65,6 +74,27 @@ export class RegisterComponent implements OnInit {
             this.toastr.error(error.error, 'Registration failed.');
           else
             this.toastr.error('Error ocured during registration. Try again', 'Registration failed.');
+      }
+    );
+  }
+
+  hasUpload(event:any){
+    this.files = event.target.files;
+    console.log(this.files[0])
+  }
+
+  uploadFile(files:File[], email:string){
+  
+    let fileToUpload = <File>files[0];
+    const formData = new FormData();
+    formData.append(email, fileToUpload, fileToUpload.name);
+    
+    this.service.uploadImage(formData).subscribe(
+      (data) => {
+        this.message = 'Upload success.';
+      },
+      error => {
+        this.toastr.error('Error ocured during image upload. Try again', 'Registration failed.');
       }
     );
   }

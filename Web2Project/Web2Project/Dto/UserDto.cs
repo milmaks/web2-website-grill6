@@ -16,5 +16,6 @@ namespace Web2Project.Dto
         public DateTime BirthDate { get; set; }
         public string Address { get; set; }
         public UserType Type { get; set; }
+        public string ImagePath { get; set; }
     }
 }

@@ -35,6 +35,14 @@ export class UserService {
     return this.http.get<Register>(environment.serverURL + '/api/users/user');
   }
 
+  uploadImage(formData : FormData){
+    return this.http.post<FormData>(environment.serverURL + '/api/users/image', formData);
+  }
+
+  getImage() : Observable<Blob>{
+    return this.http.get(environment.serverURL + '/api/users/image', { responseType: 'blob' });
+  }
+
   observer = new Subject();
   public subscriber$ = this.observer.asObservable();
   emitData(data:string) {

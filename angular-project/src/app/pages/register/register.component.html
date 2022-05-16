@@ -84,7 +84,7 @@
               </div>
 
               <div class="row">
-                <div class="col-12">
+                <div class="col-md-6 mb-4 pb-2">
 
                   <select formControlName="Type" class="select form-control-lg">
                     <option value="0" disabled>Izaberi ulogu</option>
@@ -94,10 +94,13 @@
                   <label class="form-label select-label">Izaberi ulogu</label>
 
                 </div>
+                <div class="col-md-6 mb-4 pb-2">
+                  <input type="file" placeholder="Izaberi sliku" (change)="hasUpload($event)">
+                </div>
               </div>
 
-              <div class="mt-4 pt-2">
-                <button class="btn btn-primary btn-lg" (click)="onSubmit()" type="submit" >Registruj se</button> <!-- (click)="onSubmit()" -->
+              <div class="mt-4 pt-2 align-items-center">
+                <button class="btn btn-primary btn-lg align-items-center" (click)="onSubmit()" type="submit" >Registruj se</button>
               </div>
 
             </form>

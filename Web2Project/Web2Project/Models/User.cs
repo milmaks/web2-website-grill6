@@ -16,6 +16,7 @@ namespace Web2Project.Models
         public DateTime BirthDate { get; set; }
         public string Address { get; set; }
         public UserType Type { get; set; }
+        public string ImagePath { get; set; }
 
     }
 }
