@@ -43,6 +43,7 @@ export class DashboardComponent implements OnInit {
   role:string="";
   decoded:any;
   profilePicture:any;
+  files:File[] = [];
 
   ngOnInit(): void {
     //ucitavanje elemenata za izmenu
@@ -72,21 +73,17 @@ export class DashboardComponent implements OnInit {
     this.decoded = jwt_decode(token);
     this.role = this.decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
 
-    if(this.decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/userdata"] === "true"){
-        this.service.getImage().subscribe(
-          (data) =>{
-            let objectURL = URL.createObjectURL(data); 
-            this.profilePicture = this.sanitizer.bypassSecurityTrustUrl(objectURL);
-          },
-          error =>{
-            console.log(error.error);
-            this.profilePicture = "../../../assets/images/profile-pic-placeholder.png";
-          }
-        )
-      }
-      else{
+    this.service.getImage().subscribe(
+      (data) =>{
+        let objectURL = URL.createObjectURL(data); 
+        this.profilePicture = this.sanitizer.bypassSecurityTrustUrl(objectURL);
+      },
+      error =>{
+        console.log(error.error);
         this.profilePicture = "../../../assets/images/profile-pic-placeholder.png";
       }
+    );
+
   }
 
   onSubmit(){
@@ -113,7 +110,7 @@ export class DashboardComponent implements OnInit {
     this.service.changeUserInfo(register).subscribe(
       (_data : Token) => {
         localStorage.setItem('token', _data.token);
-        this.router.navigateByUrl('/dashboard');
+        this.ngOnInit();
         this.toastr.success('Fields changed','Account update successful.');
         this.service.emitData(register.name + " " + register.lastname);
         this.changeUserForm.controls['Password'].reset();
@@ -164,6 +161,27 @@ export class DashboardComponent implements OnInit {
     );
   }
 
+  hasUpload(event:any){
+    this.files = event.target.files;
+    console.log(this.files[0])
+  }
+
+  changeProfilePicture(){
+    let fileToUpload = <File>this.files[0];
+    const formData = new FormData();
+    formData.append(this.changeUserForm.controls['Email'].value, fileToUpload, fileToUpload.name);
+    
+    this.service.uploadImage(formData).subscribe(
+      (data) => {
+        this.toastr.success('Profile picture changed.', 'Changed succeeded.');
+        this.service.emitData("profilePicture");
+        this.ngOnInit();
+      },
+      error => {
+        this.toastr.error('Error ocured during image upload. Try again', 'Change failed.');
+      }
+    );
+  }
 }
 
 

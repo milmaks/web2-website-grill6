@@ -42,7 +42,6 @@ namespace Web2Project.Controllers
         [Authorize]
         public IActionResult GetUserInfo()
         {
-            var userID = User.Claims.Where(a => a.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
             UserDto user = _userService.GetUser(User.Claims.Where(a => a.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value);
             if(user != null)
                 return Ok(user);
@@ -108,10 +107,16 @@ namespace Web2Project.Controllers
         [HttpGet("image")]
         public IActionResult Download()
         {
-            var file = Path.Combine(Directory.GetCurrentDirectory(),
-                        "Resources", "Images", "test.jpg");
+            var userEmail = User.Claims.Where(a => a.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
 
-            return PhysicalFile(file, "image/png");
+            string imagePath = _userService.GetUsersPicture(userEmail);
+            if(imagePath != null)
+            {
+                var file = Path.Combine(Directory.GetCurrentDirectory(),imagePath);
+                return PhysicalFile(file, "image/png");
+            }
+
+            return StatusCode(404);       
         }
     }
 }

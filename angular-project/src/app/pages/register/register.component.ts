@@ -80,11 +80,9 @@ export class RegisterComponent implements OnInit {
 
   hasUpload(event:any){
     this.files = event.target.files;
-    console.log(this.files[0])
   }
 
   uploadFile(files:File[], email:string){
-  
     let fileToUpload = <File>files[0];
     const formData = new FormData();
     formData.append(email, fileToUpload, fileToUpload.name);

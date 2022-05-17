@@ -26,7 +26,9 @@ export class NavbarComponent implements OnInit {
 
   ngOnInit(): void {
     this.service.subscriber$.subscribe(data => {
-      this.name = data as string;
+      if(data as string !== "profilepicture")
+        this.name = data as string;
+      this.isSignin();
     });
     this.service.subscriber1$.subscribe(data => {
       this.show = data as boolean;
@@ -54,21 +56,16 @@ export class NavbarComponent implements OnInit {
       this.decoded = jwt_decode(this.token);
       this.name = this.decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"];
 
-      if(this.decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/userdata"] === "true"){
-        this.service.getImage().subscribe(
-          (data) =>{
-            let objectURL = URL.createObjectURL(data); 
-            this.profilePicture = this.sanitizer.bypassSecurityTrustUrl(objectURL);
-          },
-          error =>{
-            console.log(error.error);
-            this.profilePicture = "../../../assets/images/profile-pic-placeholder.png";
-          }
-        )
-      }
-      else{
-        this.profilePicture = "../../../assets/images/profile-pic-placeholder.png";
-      }
+      this.service.getImage().subscribe(
+        (data) =>{
+          let objectURL = URL.createObjectURL(data); 
+          this.profilePicture = this.sanitizer.bypassSecurityTrustUrl(objectURL);
+        },
+        error =>{
+          this.profilePicture = "../../../assets/images/profile-pic-placeholder.png";
+        }
+      );
+
 
     }
     else{

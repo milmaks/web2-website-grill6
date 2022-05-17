@@ -17,7 +17,7 @@
           <div class="row">
 
             <div class="col-sm">
-                <img width="450" height="450" [src]="this.profilePicture"/>
+                <img style="object-fit:cover;" width="450" height="450" [src]="this.profilePicture"/>
             </div>
 
             <div class="col-sm">
@@ -37,6 +37,12 @@
                 <label for="birthdayDate" class="form-label">Datum rođenja</label>
               </div>
 
+              <form>
+                <div class="form-outline">
+                  <input type="file" placeholder="Izaberi sliku" (change)="hasUpload($event)">
+                  <button class="btn btn-primary btn-lg" (click)="changeProfilePicture()" type="submit" >Izmeni sliku</button>
+                </div>
+              </form>
             </div>
 
             <div class="col-sm">

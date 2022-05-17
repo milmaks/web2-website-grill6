@@ -34,6 +34,7 @@ export class AdministratorComponent implements OnInit {
     this.service.changeDeliveryUser(delivery).subscribe(
       (data) => {
         this.toastr.success("User\'s status changed succesfuly","Delivery user change");
+        this.ngOnInit();
       },
       error => {
         this.toastr.error(error.error, "Delivery user change");

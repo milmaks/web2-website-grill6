@@ -14,11 +14,15 @@ namespace Web2Project.Services
     {
         private readonly IMapper _mapper;
         private readonly SiteDbContext _dbContext;
+        private readonly IEmailService _emailService;
+        private readonly string acceptedMessage = "Vaš zahtev je prihvaćen. Možete nastaviti sa korišćenjem usluga dostavljača.";
+        private readonly string declinedMessage = "Žao nam je, Vaš zahtev za nalog dostavljača je odbijen.";
 
-        public AdministratorService(IMapper mapper, SiteDbContext dbContext)
+        public AdministratorService(IMapper mapper, SiteDbContext dbContext, IEmailService emailService)
         {
             _mapper = mapper;
             _dbContext = dbContext;
+            _emailService = emailService;
         }
 
         public bool ChangeDeliveryUserState(DeliveryDto dto)
@@ -29,6 +33,13 @@ namespace Web2Project.Services
                 return false;
 
             delivery.Status = dto.Status;
+
+            if (delivery.Status == Status.Accepted)
+                _emailService.SendEmail(new Message(new string[] { delivery.Email }, "GRILL6 Verifikacija", acceptedMessage, null));
+            else
+                _emailService.SendEmail(new Message(new string[] { delivery.Email }, "GRILL6 Verifikacija", declinedMessage, null));
+
+
             _dbContext.SaveChanges();
             return true;
         }

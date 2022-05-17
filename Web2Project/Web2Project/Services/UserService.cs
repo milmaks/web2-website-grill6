@@ -113,6 +113,16 @@ namespace Web2Project.Services
                 return _mapper.Map<UserDto>(user);
         }
 
+        public string GetUsersPicture(string email)
+        {
+            User user = _dbContext.Users.Find(email);
+
+            if (user == null)
+                return string.Empty;
+            else
+                return user.ImagePath;
+        }
+
         public TokenDto Login(UserLogInDto dto)
         {
             User user = _dbContext.Users.Find(dto.Email);

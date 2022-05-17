@@ -20,6 +20,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Web2Project.Infrastructure;
+using Web2Project.Infrastructure.Configurations;
 using Web2Project.Interfaces;
 using Web2Project.Mapping;
 using Web2Project.Services;
@@ -99,6 +100,11 @@ namespace Web2Project
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IDeliveryService, DeliveryService>();
             services.AddScoped<IAdministratorService, AdministratorService>();
+            var emailConfig = Configuration
+                .GetSection("EmailConfiguration")
+                .Get<EmailConfiguration>();
+            services.AddSingleton(emailConfig);
+            services.AddScoped<IEmailService, EmailService>();
 
             //registracija db contexta u kontejneru zavisnosti, njegov zivotni vek je Scoped
             services.AddDbContext<SiteDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("SiteDatabase")));
