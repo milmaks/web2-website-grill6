@@ -35,11 +35,50 @@
         </div>
     </div>
 </ng-template>
-</mat-expansion-panel>
-</mat-accordion>
-
 <ng-template #noDeliveryUsers>
 
     <h1>No delivery users exists in system.</h1>
     
   </ng-template>
+</mat-expansion-panel>
+<mat-expansion-panel (opened)="panelOpenState1 = true"
+                         (closed)="panelOpenState1 = false">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+            Dodavanje proizvoda  
+        </mat-panel-title>
+        <mat-panel-description>
+           &nbsp;&nbsp;&nbsp;{{panelOpenState1 ? 'skloni' : 'prikaži'}} formu   
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+
+      <div class="card-body p-md-3">
+        <form  [formGroup]="addNewProductForm">
+            <div class="row">
+                <div class="col-sm">
+                    <div class="form-outline">
+                        <input type="text" formControlName="Name" class="form-control form-control-lg" />
+                        <label class="form-label" for="Name">Ime proizvoda</label>
+                    </div>
+        
+                    <div class="form-outline">
+                        <input type="number" formControlName="Price" step=".1" class="form-control form-control-lg" />
+                        <label class="form-label" for="Price">Cena proizvoda</label>
+                    </div>
+                </div>
+
+                <div class="col-sm">
+                    <div class="form-outline">
+                        
+                        <textarea style="height: 125px;" formControlName="Ingredients" class="form-control form-control-lg"></textarea>
+                        <label class="form-label" for="Ingredients">Sastojci</label>
+                    </div>
+        
+                    <button class="btn btn-primary btn-lg" (click)="onSubmitAdd()" type="submit" >Dodaj proizvod</button>
+                </div>
+            </div>
+        </form>
+      </div>
+
+    </mat-expansion-panel>
+</mat-accordion>

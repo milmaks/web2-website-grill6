@@ -36,5 +36,12 @@ namespace Web2Project.Controllers
             else
                 return StatusCode(409, "Something went wrong with status change. Try again");
         }
+
+        [HttpPost("product")]
+        [Authorize(Roles = "administrator")]
+        public IActionResult AddNewProduct([FromBody] ProductDto dto)
+        {
+            return Ok(_administratorService.AddProduct(dto));
+        }
     }
 }

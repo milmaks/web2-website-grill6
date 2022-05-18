@@ -25,6 +25,23 @@ namespace Web2Project.Services
             _emailService = emailService;
         }
 
+        public ProductDto AddProduct(ProductDto newProduct)
+        {
+            Product product = _mapper.Map<Product>(newProduct);
+
+            var splited = product.Ingredients.Split('\n');
+            product.Ingredients = string.Empty;
+            foreach (var str in splited)
+            {
+                product.Ingredients += str;
+            }
+
+            _dbContext.Products.Add(product);
+            _dbContext.SaveChanges();
+
+            return _mapper.Map<ProductDto>(product);
+        }
+
         public bool ChangeDeliveryUserState(DeliveryDto dto)
         {
             Delivery delivery = _dbContext.Deliveries.Find(dto.Email);

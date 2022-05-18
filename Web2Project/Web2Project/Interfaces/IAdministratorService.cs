@@ -10,5 +10,6 @@ namespace Web2Project.Interfaces
     {
         List<DeliveryDto> GetAllDeliveryUsers();
         bool ChangeDeliveryUserState(DeliveryDto dto);
+        ProductDto AddProduct(ProductDto newProduct);
     }
 }

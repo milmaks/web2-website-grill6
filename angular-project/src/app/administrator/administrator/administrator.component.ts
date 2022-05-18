@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { Product } from 'src/app/shared/models/product.model';
 import { AdministratorService } from '../administrator.service';
 import { Delivery } from '../models/delivery.model';
 
@@ -16,6 +17,13 @@ export class AdministratorComponent implements OnInit {
 
   deliveryUsers: Delivery[] = [];
   panelOpenState = false;
+  panelOpenState1 = false;
+
+  addNewProductForm = new FormGroup({
+    Name: new FormControl('', Validators.required),
+    Price: new FormControl('', Validators.required),
+    Ingredients: new FormControl('', Validators.required)
+  });
 
   ngOnInit(): void {
     this.service.getDeliveryUsers().subscribe(
@@ -52,6 +60,24 @@ export class AdministratorComponent implements OnInit {
       },
       error => {
         this.toastr.error(error.error, "Delivery user change");
+      });
+  }
+
+  onSubmitAdd(){
+    let newProduct:Product = new Product();
+    newProduct.name = this.addNewProductForm.controls['Name'].value;
+    newProduct.price = this.addNewProductForm.controls['Price'].value;
+    newProduct.ingredients = this.addNewProductForm.controls['Ingredients'].value;
+
+    this.service.addNewProduct(newProduct).subscribe(
+      (data) => {
+        this.toastr.success("New product",(data.name) + " added succesfuly");
+        this.addNewProductForm.reset();
+        this.ngOnInit();
+      },
+      error => {
+        console.log(error.error);
+        this.toastr.error(error.error, "New product");
       });
   }
 

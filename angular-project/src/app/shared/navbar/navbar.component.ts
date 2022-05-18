@@ -31,6 +31,7 @@ export class NavbarComponent implements OnInit {
       this.isSignin();
     });
     this.service.subscriber1$.subscribe(data => {
+      console.log("show false");
       this.show = data as boolean;
       this.isSignin();
     });

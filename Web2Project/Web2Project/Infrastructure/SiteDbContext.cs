@@ -11,6 +11,7 @@ namespace Web2Project.Infrastructure
     {
         public DbSet<User> Users { get; set; }
         public DbSet<Delivery> Deliveries { get; set; }
+        public DbSet<Product> Products { get; set; }
 
         public SiteDbContext(DbContextOptions options) : base(options)
         {

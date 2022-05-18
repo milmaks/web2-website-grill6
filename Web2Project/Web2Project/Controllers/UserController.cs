@@ -107,7 +107,15 @@ namespace Web2Project.Controllers
         [HttpGet("image")]
         public IActionResult Download()
         {
-            var userEmail = User.Claims.Where(a => a.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
+            string userEmail = "";
+            try
+            {
+                userEmail = User.Claims.Where(a => a.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
+            }
+            catch(Exception)
+            {
+                return StatusCode(409);
+            }
 
             string imagePath = _userService.GetUsersPicture(userEmail);
             if(imagePath != null)
