@@ -15,5 +15,6 @@ namespace Web2Project.Interfaces
         UserDto ChnageUserPassword(UserPasswordChangeDto dto);
         bool AddUsersPicture(string email, string path);
         string GetUsersPicture(string email);
+        List<ProductDto> GetAllProducts();
     }
 }

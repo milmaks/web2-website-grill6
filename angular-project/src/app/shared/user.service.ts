@@ -6,6 +6,7 @@ import { environment } from 'src/environments/environment';
 import { Login } from './models/login.model';
 import { Token } from './models/token.model';
 import { ChangePassword } from './models/changePassword.model';
+import { Product } from './models/product.model';
 
 @Injectable({
   providedIn: 'root'
@@ -41,6 +42,10 @@ export class UserService {
 
   getImage() : Observable<Blob>{
     return this.http.get(environment.serverURL + '/api/users/image', { responseType: 'blob' });
+  }
+
+  getAllProducts() : Observable<Product[]>{
+    return this.http.get<Product[]>(environment.serverURL + '/api/users/products');
   }
 
   observer = new Subject();

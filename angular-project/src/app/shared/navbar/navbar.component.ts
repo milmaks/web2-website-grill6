@@ -38,7 +38,6 @@ export class NavbarComponent implements OnInit {
     
     if (localStorage.getItem('token') != null){
       this.router.navigateByUrl('/');
-      console.log("here");
     }
     this.isSignin();
   }
@@ -66,8 +65,6 @@ export class NavbarComponent implements OnInit {
           this.profilePicture = "../../../assets/images/profile-pic-placeholder.png";
         }
       );
-
-
     }
     else{
       this.show = false;

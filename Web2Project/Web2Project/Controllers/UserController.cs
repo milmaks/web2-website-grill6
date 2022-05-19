@@ -49,6 +49,12 @@ namespace Web2Project.Controllers
                 return StatusCode(409, $"User doesn\'t exist.");
         }
 
+        [HttpGet("products")]
+        public IActionResult GetAllProducts()
+        {
+            return Ok(_userService.GetAllProducts());
+        }
+
         [HttpPost("change-password")]
         [Authorize]
         public IActionResult ChangeUserPassword([FromBody] UserPasswordChangeDto dto)

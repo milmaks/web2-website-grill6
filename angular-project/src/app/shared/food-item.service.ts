@@ -19,7 +19,7 @@ export class FoodItemService {
     },
     {
       id:2,
-      foodName:"Veggie Supreme",
+      foodName:"Pizza - Veggie Supreme",
       foodDetails:"Onion| Green Capsicum|Mushroom |black olives , sweet corn , Red Paprika topped with Cheese",
       foodPrice:369,
       foodImg:"https://res.cloudinary.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_1024/sgbobtbxlojbtdnr2m5k"
@@ -33,7 +33,7 @@ export class FoodItemService {
     },
     {
       id:4,
-      foodName:"Veg Masala Roll In Naan",
+      foodName:"Burito - Veg Masala Roll In Naan",
       foodDetails:"A homely mix of mashed potato and veggies, seasoned with Indian spices. A filling sure to take you back to mom's kitchen.",
       foodPrice:140,
       foodImg:"https://res.cloudinary.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_1024/l2ng6gtge30sqaafqng7"

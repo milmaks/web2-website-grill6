@@ -51,9 +51,9 @@ namespace Web2Project.Migrations
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
 
-                    b.Property<double>("Price")
+                    b.Property<float>("Price")
                         .HasPrecision(2)
-                        .HasColumnType("float(2)");
+                        .HasColumnType("real(2)");
 
                     b.HasKey("Id");
 

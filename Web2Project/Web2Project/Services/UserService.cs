@@ -103,6 +103,11 @@ namespace Web2Project.Services
             }
         }
 
+        public List<ProductDto> GetAllProducts()
+        {
+            return _mapper.Map<List<ProductDto>>(_dbContext.Products.ToList());
+        }
+
         public UserDto GetUser(string email)
         {
             User user = _dbContext.Users.Find(email);
