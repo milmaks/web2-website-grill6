@@ -15,6 +15,8 @@ namespace Web2Project.Mapping
             CreateMap<User, UserDto>().ReverseMap(); //Kazemo mu da mapira User na UserDto i obrnuto
             CreateMap<Delivery, DeliveryDto>().ReverseMap();
             CreateMap<Product, ProductDto>().ReverseMap();
+            CreateMap<Order, OrderDto>().ReverseMap();
+            CreateMap<ProductInOrder, ProductInOrderDto>().ReverseMap();
         }
     }
 }

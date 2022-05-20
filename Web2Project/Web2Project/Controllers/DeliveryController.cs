@@ -12,7 +12,7 @@ namespace Web2Project.Controllers
 {
     [Route("api/delivery")]
     [ApiController]
-    public class DeliveryController : Controller
+    public class DeliveryController : ControllerBase
     {
         private readonly IDeliveryService _deliveryService;
 

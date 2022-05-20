@@ -8,18 +8,15 @@ using Web2Project.Models;
 
 namespace Web2Project.Infrastructure.Configurations
 {
-    public class ProductConfiguration : IEntityTypeConfiguration<Product>
+    public class OrderConfiguration : IEntityTypeConfiguration<Order>
     {
-        public void Configure(EntityTypeBuilder<Product> builder)
+        public void Configure(EntityTypeBuilder<Order> builder)
         {
             builder.HasKey(x => x.Id);
 
             builder.Property(x => x.Id).ValueGeneratedOnAdd(); //Kazem da ce se primarni kljuc
                                                                //automatski generisati prilikom dodavanja,
                                                                //redom 1 2 3...
-
-            builder.Property(x => x.Name).HasMaxLength(30);
-            builder.Property(x => x.Ingredients).HasMaxLength(100);
         }
     }
 }

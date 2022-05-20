@@ -11,7 +11,7 @@ namespace Web2Project.Controllers
 {
     [Route("api/administrator")]
     [ApiController]
-    public class AdministratorController : Controller
+    public class AdministratorController : ControllerBase
     {
         private readonly IAdministratorService _administratorService;
 

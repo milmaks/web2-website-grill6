@@ -36,6 +36,39 @@ namespace Web2Project.Migrations
                     b.ToTable("Deliveries");
                 });
 
+            modelBuilder.Entity("Web2Project.Models.Order", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Address")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("BuyerEmail")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Comment")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DeliveryEmail")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DeliveryTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("OrderTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<float>("Price")
+                        .HasColumnType("real");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Orders");
+                });
+
             modelBuilder.Entity("Web2Project.Models.Product", b =>
                 {
                     b.Property<long>("Id")
@@ -52,12 +85,34 @@ namespace Web2Project.Migrations
                         .HasColumnType("nvarchar(30)");
 
                     b.Property<float>("Price")
-                        .HasPrecision(2)
-                        .HasColumnType("real(2)");
+                        .HasColumnType("real");
 
                     b.HasKey("Id");
 
                     b.ToTable("Products");
+                });
+
+            modelBuilder.Entity("Web2Project.Models.ProductInOrder", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<long>("OrderId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("ProductId")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.ToTable("ProductInOrder");
                 });
 
             modelBuilder.Entity("Web2Project.Models.User", b =>
@@ -100,6 +155,22 @@ namespace Web2Project.Migrations
                         .IsUnique();
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("Web2Project.Models.ProductInOrder", b =>
+                {
+                    b.HasOne("Web2Project.Models.Order", "Order")
+                        .WithMany("ProductsInOrder")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
+                });
+
+            modelBuilder.Entity("Web2Project.Models.Order", b =>
+                {
+                    b.Navigation("ProductsInOrder");
                 });
 #pragma warning restore 612, 618
         }

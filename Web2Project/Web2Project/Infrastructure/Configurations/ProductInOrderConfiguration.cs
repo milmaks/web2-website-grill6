@@ -8,9 +8,9 @@ using Web2Project.Models;
 
 namespace Web2Project.Infrastructure.Configurations
 {
-    public class ProductConfiguration : IEntityTypeConfiguration<Product>
+    public class ProductInOrderConfiguration : IEntityTypeConfiguration<ProductInOrder>
     {
-        public void Configure(EntityTypeBuilder<Product> builder)
+        public void Configure(EntityTypeBuilder<ProductInOrder> builder)
         {
             builder.HasKey(x => x.Id);
 
@@ -18,8 +18,11 @@ namespace Web2Project.Infrastructure.Configurations
                                                                //automatski generisati prilikom dodavanja,
                                                                //redom 1 2 3...
 
-            builder.Property(x => x.Name).HasMaxLength(30);
-            builder.Property(x => x.Ingredients).HasMaxLength(100);
+            builder.HasOne(x => x.Order)
+                   .WithMany(x => x.ProductsInOrder)
+                   .HasForeignKey(x => x.OrderId)
+                   .OnDelete(DeleteBehavior.Cascade);
+
         }
     }
 }

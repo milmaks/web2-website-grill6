@@ -100,6 +100,7 @@ namespace Web2Project
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IDeliveryService, DeliveryService>();
             services.AddScoped<IAdministratorService, AdministratorService>();
+            services.AddScoped<IOrderService, OrderService>();
             var emailConfig = Configuration
                 .GetSection("EmailConfiguration")
                 .Get<EmailConfiguration>();
