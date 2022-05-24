@@ -126,7 +126,7 @@
   </mat-accordion>
   
 <div *ngIf="this.role == 'buyer'">
-    <app-buyer></app-buyer>
+    <app-buyer [email]="email"></app-buyer>
 </div>
 <div *ngIf="this.role == 'delivery'">
     <app-delivery></app-delivery>

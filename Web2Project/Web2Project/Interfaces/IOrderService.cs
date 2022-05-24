@@ -10,5 +10,9 @@ namespace Web2Project.Interfaces
     {
         NewOrderDto NewOrder(NewOrderDto newOrderDto);  
         List<OrderDto> GetAllOrders();
+        OrderDto ConfirmOrder(OrderConfirmationDto dto);
+        List<OrderDto> GetOrdersByEmail(string email);
+        OrderDto GetActiveOrder(string email);
+
     }
 }

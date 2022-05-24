@@ -60,10 +60,7 @@ export class RegisterComponent implements OnInit {
     
     this.service.register(register).subscribe(
       (_data) => {
-        if (this.files.length === 0) {
-          return;
-        }
-        else{
+        if (this.files.length !== 0) {
           this.uploadFile(this.files, register.email);
         }
         this.router.navigateByUrl('/');

@@ -1,1 +1,85 @@
-<p>buyer works!</p>
+<mat-accordion>
+    <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                Nova/trenutna porudzbina
+            </mat-panel-title>
+            <mat-panel-description>
+                &nbsp;&nbsp;&nbsp;{{panelOpenState ? 'skloni' : 'prikaži'}} porudzbinu
+            </mat-panel-description>
+        </mat-expansion-panel-header>
+
+        <div class="card-body p-md-3">
+         <div *ngIf="this.hasActiveOrder;else orderform">
+
+         </div>
+
+         <ng-template #orderform>
+            <div *ngIf="this.foodItemsAvailabe;else noFoodItems">
+                <form [formGroup]="newOrderForm">
+                    <div class="row">
+                        <div class="col-sm">
+                            Proizvod
+                        </div>
+                        <div class="col-sm">
+                            Sastojci
+                        </div>
+                        <div class="col-sm">
+                            Cena
+                        </div>
+                        <div class="col-sm">
+                            Kolicina
+                        </div>
+                    </div>
+                    <div *ngFor="let fd of foodItems">
+                        <div class="row">
+                            <div class="col-sm">
+                                {{fd.product.name}}
+                            </div>
+                            <div class="col-sm">
+                                {{fd.product.ingredients}}
+                            </div>
+                            <div class="col-sm">
+                                {{fd.product.price}} RSD
+                            </div>
+                            <div class="col-sm">
+                                <input type="number" style="width: 50px;" step="1" min="0" value="0" oninput="this.value = Math.round(this.value);" [(ngModel)]="fd.quantity" [ngModelOptions]="{standalone: true}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm">
+                            <input type="text" value="test" formControlName="Address" class="form-control form-control-lg" />
+                            <label class="form-label" for="Address">Adresa</label>
+                        </div>
+                        <div class="col-sm">
+                            <input type="text" formControlName="Comment" class="form-control form-control-lg" />
+                            <label class="form-label" for="homeAddress">Komentar</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm">
+                        </div>
+                        <div class="col-sm">
+                            <!--<p>{{priceDisplayValue}}</p>-->
+                            <div *ngIf="priceDisplayValue == 0;else regularButton" style="position: relative;">
+                                Ukupna cena: {{priceDisplayValue}}
+                                <button class="btn btn-primary btn-lg" (click)="onOrder()" disabled type="submit" >Poruci</button>
+                            </div>
+                            <ng-template #regularButton>
+                                Ukupna cena: {{priceDisplayValue}}
+                                <button class="btn btn-primary btn-lg" (click)="onOrder()" type="submit" >Poruci</button>
+                            </ng-template>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <ng-template #noFoodItems>
+                <p>Trenutno nema proizvoda koji se mogu poruciti</p>
+            </ng-template>
+         </ng-template>
+        </div>
+
+    </mat-expansion-panel>
+</mat-accordion>

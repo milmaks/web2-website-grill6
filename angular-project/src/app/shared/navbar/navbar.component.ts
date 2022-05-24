@@ -15,14 +15,21 @@ import { DomSanitizer } from '@angular/platform-browser';
   styleUrls: ['./navbar.component.css']
 })
 export class NavbarComponent implements OnInit {
-  loginForm = new FormGroup({
-    Email : new FormControl("", Validators.required),
-    Password : new FormControl("", Validators.required),
-  });
   
   constructor(private service: UserService, private router: Router, private toastr: ToastrService, route:ActivatedRoute, private sanitizer: DomSanitizer) { 
 
   }
+
+  loginForm = new FormGroup({
+    Email : new FormControl("", Validators.required),
+    Password : new FormControl("", Validators.required),
+  });
+
+  show: boolean = false;
+  token: string = "";
+  name: string = "";
+  decoded:any;
+  profilePicture:any;
 
   ngOnInit(): void {
     this.service.subscriber$.subscribe(data => {
@@ -42,13 +49,8 @@ export class NavbarComponent implements OnInit {
     this.isSignin();
   }
 
-  show: boolean = false;
-  token: string = "";
-  name: string = "";
-  decoded:any;
-  profilePicture:any;
-
   isSignin() {
+    console.log("isSignin")
     if (localStorage.getItem('token') != null){
       this.show = true;
       const temp = localStorage.getItem('token');
@@ -58,8 +60,12 @@ export class NavbarComponent implements OnInit {
 
       this.service.getImage().subscribe(
         (data) =>{
-          let objectURL = URL.createObjectURL(data); 
-          this.profilePicture = this.sanitizer.bypassSecurityTrustUrl(objectURL);
+          if(data !== null){
+            let objectURL = URL.createObjectURL(data); 
+            this.profilePicture = this.sanitizer.bypassSecurityTrustUrl(objectURL);
+          }
+          else
+          this.profilePicture = "../../../assets/images/profile-pic-placeholder.png";
         },
         error =>{
           this.profilePicture = "../../../assets/images/profile-pic-placeholder.png";
@@ -68,6 +74,7 @@ export class NavbarComponent implements OnInit {
     }
     else{
       this.show = false;
+      this.profilePicture = "";
     }
   }
 
@@ -96,8 +103,12 @@ export class NavbarComponent implements OnInit {
   }
 
   logOut(){
+    this.profilePicture = "";
     localStorage.removeItem('token');
-    this.isSignin();
-    this.router.navigateByUrl('/');
+    this.router.navigateByUrl('/').then(() =>{
+      console.log("reload");
+      window.location.reload();
+    });
+    
   }
 }

@@ -14,6 +14,8 @@ namespace Web2Project.Services
     {
         private readonly IMapper _mapper;
         private readonly SiteDbContext _dbContext;
+        private static readonly object _lock = new object();
+        private static bool _ready = false;
 
         public OrderService(IMapper mapper, SiteDbContext dbContext)
         {
@@ -36,7 +38,7 @@ namespace Web2Project.Services
             orderDto.Price = 200;
             foreach (var prod in orderDto.ProductsInOrder)
             {
-                //orderDto.Price += prod.Product.Price * prod.Quantity;
+                orderDto.Price += _dbContext.Products.Find(prod.ProductId).Price * prod.Quantity;
             }
             orderDto.OrderTime = DateTime.Now;
 
@@ -48,6 +50,51 @@ namespace Web2Project.Services
             newOrderDto.Price = order.Price;
             newOrderDto.OrderTime = order.OrderTime;
             return _mapper.Map<NewOrderDto>(newOrderDto);
+        }
+
+        public OrderDto ConfirmOrder(OrderConfirmationDto dto)
+        {
+            Order order = null;
+
+            if (!_ready)
+            {
+                lock(_lock)
+                {
+                    if(!_ready)
+                    {
+                        _ready = true;
+                        order = _dbContext.Orders.Find(dto.Id);
+                        order.DeliveryEmail = dto.Email;
+                        Random rnd = new Random();
+                        order.DeliveryTime = DateTime.Now.AddMinutes(rnd.Next(5, 15));
+                    }
+                }
+                _ready = false;
+                return _mapper.Map<OrderDto>(order);
+            }
+
+            return null;
+        }
+
+        public List<OrderDto> GetOrdersByEmail(string email)
+        {
+            return _mapper.Map<List<OrderDto>>(_dbContext.Orders.Where(order => order.BuyerEmail == email || order.DeliveryEmail == email));
+        }
+
+        public OrderDto GetActiveOrder(string email)
+        {
+            List<Order> orders = _dbContext.Orders.Where(order => order.BuyerEmail == email || order.DeliveryEmail == email).ToList();
+
+            foreach (var order in orders)
+            {
+                if (order.DeliveryEmail == null)
+                    return _mapper.Map<OrderDto>(order);
+
+                if(order.DeliveryTime > order.OrderTime)
+                    return _mapper.Map<OrderDto>(order);
+            }
+
+            return null;
         }
     }
 }

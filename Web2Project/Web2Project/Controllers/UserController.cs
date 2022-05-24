@@ -111,6 +111,7 @@ namespace Web2Project.Controllers
         }
 
         [HttpGet("image")]
+        [ResponseCache(VaryByHeader = "User-Agent", Duration = 0)]
         public IActionResult Download()
         {
             string userEmail = "";
@@ -124,13 +125,17 @@ namespace Web2Project.Controllers
             }
 
             string imagePath = _userService.GetUsersPicture(userEmail);
-            if(imagePath != null)
+            if(imagePath == string.Empty)
             {
-                var file = Path.Combine(Directory.GetCurrentDirectory(),imagePath);
-                return PhysicalFile(file, "image/png");
+                return StatusCode(409, "User does not exist.");
+            }
+            if(imagePath == null)
+            {
+                return NoContent();
             }
 
-            return StatusCode(404);       
+            var file = Path.Combine(Directory.GetCurrentDirectory(), imagePath);
+            return PhysicalFile(file, "image/png");     
         }
     }
 }

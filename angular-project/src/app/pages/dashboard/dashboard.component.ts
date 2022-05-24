@@ -44,6 +44,7 @@ export class DashboardComponent implements OnInit {
   decoded:any;
   profilePicture:any;
   files:File[] = [];
+  email:string = "";
 
   ngOnInit(): void {
     //ucitavanje elemenata za izmenu
@@ -60,6 +61,8 @@ export class DashboardComponent implements OnInit {
           Password: "",
           passwordRep: "",
         })
+
+        this.email = data.email;
       },
       error => {
           this.toastr.error(error.error, 'Failed to get user info.');
@@ -73,16 +76,19 @@ export class DashboardComponent implements OnInit {
     this.decoded = jwt_decode(token);
     this.role = this.decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
 
-    this.service.getImage().subscribe(
-      (data) =>{
-        let objectURL = URL.createObjectURL(data); 
-        this.profilePicture = this.sanitizer.bypassSecurityTrustUrl(objectURL);
+    this.service.getImage().subscribe({
+      next: (data) =>{
+        if(data !== null){
+          let objectURL = URL.createObjectURL(data); 
+          this.profilePicture = this.sanitizer.bypassSecurityTrustUrl(objectURL);
+        }
+        else
+        this.profilePicture = "../../../assets/images/profile-pic-placeholder.png";
       },
-      error =>{
-        console.log(error.error);
+      error: (e) =>{
         this.profilePicture = "../../../assets/images/profile-pic-placeholder.png";
       }
-    );
+    });
 
   }
 
