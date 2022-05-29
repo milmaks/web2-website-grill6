@@ -52,6 +52,13 @@ namespace Web2Project.Controllers
                 return StatusCode(409);
         }
 
+        [HttpGet("unconfirmed")]
+        [Authorize(Roles = "delivery")]
+        public IActionResult UnconfirmedOrders()
+        {
+            return Ok(_orderService.GetAllUnconfirmedOrders());
+        }
+
         [HttpGet("user")]
         [Authorize(Roles = "delivery,buyer")]
         public IActionResult GetUsersOrders()

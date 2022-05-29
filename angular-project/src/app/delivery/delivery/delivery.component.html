@@ -1,2 +1,26 @@
-<p>delivery works!</p>
-<p>{{this.status}}</p>
+<ng-container *ngIf="this.status == 'Prihvacen';else denied">
+    <mat-accordion>
+        <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    {{this.orderMess}}
+                </mat-panel-title>
+                <mat-panel-description>
+                    &nbsp;&nbsp;&nbsp;{{panelOpenState ? 'skloni' : 'prikaži'}} porudzbinu
+                </mat-panel-description>
+            </mat-expansion-panel-header>
+
+        </mat-expansion-panel>
+    </mat-accordion>
+</ng-container>
+
+<ng-template #denied>
+    <ng-container *ngIf="this.status == 'Odbijen'">
+        <br/>
+        <p>&nbsp;Vas zahtev za pristup je odbijen</p> 
+    </ng-container>
+    <ng-container *ngIf="this.status == 'Na cekanju'">
+        <br/>
+        <p>&nbsp;Vas zahtev za pristup je u obradi</p>
+    </ng-container>
+</ng-template>

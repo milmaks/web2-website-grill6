@@ -2,7 +2,7 @@
     <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
         <mat-expansion-panel-header>
             <mat-panel-title>
-                Nova/trenutna porudzbina
+                {{this.orderMessage}} porudzbina
             </mat-panel-title>
             <mat-panel-description>
                 &nbsp;&nbsp;&nbsp;{{panelOpenState ? 'skloni' : 'prikaži'}} porudzbinu
@@ -11,7 +11,59 @@
 
         <div class="card-body p-md-3">
          <div *ngIf="this.hasActiveOrder;else orderform">
-
+            <div class="row">
+                <div class="col-sm">
+                    Adresa
+                </div>
+                <div class="col-sm">
+                    Vreme narucivanja
+                </div>
+                <ng-container *ngIf="this.activeOrder.deliveryEmail">
+                    <div class="col-sm">
+                        Vreme dostave
+                    </div>
+                </ng-container>
+                <div class="col-sm">
+                    Porucena hrana
+                </div>
+                <div class="col-sm">
+                    Ukupna cena
+                </div>
+                <div class="col-sm">
+                    Status
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm">
+                    {{this.activeOrder.address}}
+                </div>
+                <div class="col-sm">
+                    {{this.activeOrder.orderTime}}
+                </div>
+                <ng-container *ngIf="this.activeOrder.deliveryEmail">
+                    <div class="col-sm">
+                        {{this.activeOrder.deliveryTime}}
+                    </div>
+                </ng-container>
+                <div class="col-sm">
+                    <ng-container *ngFor="let prod of activeOrder.productsInOrder">
+                        {{foodItemsMap.get(prod.productId)?.name!}}&nbsp;{{prod.quantity}}&nbsp;kom.<br/>
+                    </ng-container>
+                </div>
+                <div class="col-sm">
+                    {{this.activeOrder.price}}
+                </div>
+                <ng-container *ngIf="this.activeOrder.deliveryEmail;else inProgress">
+                    <div class="col-sm">
+                        Aktivna
+                    </div>
+                </ng-container>
+                <ng-template #inProgress>
+                    <div class="col-sm">
+                        Na cekanju
+                    </div>
+                </ng-template>
+            </div>
          </div>
 
          <ng-template #orderform>
@@ -34,13 +86,13 @@
                     <div *ngFor="let fd of foodItems">
                         <div class="row">
                             <div class="col-sm">
-                                {{fd.product.name}}
+                                {{foodItemsMap.get(fd.productId)!.name}}
                             </div>
                             <div class="col-sm">
-                                {{fd.product.ingredients}}
+                                {{foodItemsMap.get(fd.productId)!.ingredients}}
                             </div>
                             <div class="col-sm">
-                                {{fd.product.price}} RSD
+                                {{foodItemsMap.get(fd.productId)!.price}} RSD
                             </div>
                             <div class="col-sm">
                                 <input type="number" style="width: 50px;" step="1" min="0" value="0" oninput="this.value = Math.round(this.value);" [(ngModel)]="fd.quantity" [ngModelOptions]="{standalone: true}">

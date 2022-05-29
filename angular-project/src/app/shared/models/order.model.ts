@@ -11,11 +11,11 @@ export class Order {
 }
 
 export class ProductsInOrder{
-    product: Product = new Product;
+    productId:number = 0;
     quantity:number = 0;
 
-    constructor(public p:Product, public q:number) {
-        this.product = p;
+    constructor(public p:number, public q:number) {
+        this.productId = p;
         this.quantity = q;
     }
 }

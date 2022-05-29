@@ -13,6 +13,7 @@ namespace Web2Project.Interfaces
         OrderDto ConfirmOrder(OrderConfirmationDto dto);
         List<OrderDto> GetOrdersByEmail(string email);
         OrderDto GetActiveOrder(string email);
+        List<OrderDto> GetAllUnconfirmedOrders();
 
     }
 }

@@ -88,13 +88,25 @@ namespace Web2Project.Services
             foreach (var order in orders)
             {
                 if (order.DeliveryEmail == null)
+                {
+                    List<ProductInOrder> products = _dbContext.ProductInOrder.Where(prodInOrder => prodInOrder.OrderId == order.Id).ToList();
                     return _mapper.Map<OrderDto>(order);
+                }
 
-                if(order.DeliveryTime > order.OrderTime)
+                if (order.DeliveryTime > order.OrderTime)
+                {
+                    List<ProductInOrder> products = _dbContext.ProductInOrder.Where(prodInOrder => prodInOrder.OrderId == order.Id).ToList();
                     return _mapper.Map<OrderDto>(order);
+                }
             }
 
             return null;
+        }
+
+        public List<OrderDto> GetAllUnconfirmedOrders()
+        {
+            List<Order> orders = _dbContext.Orders.Where(order => order.DeliveryEmail == null).ToList();
+            return _mapper.Map<List<OrderDto>>(orders);
         }
     }
 }

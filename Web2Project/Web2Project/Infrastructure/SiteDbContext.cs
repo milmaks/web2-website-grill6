@@ -13,6 +13,7 @@ namespace Web2Project.Infrastructure
         public DbSet<Delivery> Deliveries { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<Order> Orders { get; set; }
+        public DbSet<ProductInOrder> ProductInOrder { get; set; }
 
         public SiteDbContext(DbContextOptions options) : base(options)
         {
