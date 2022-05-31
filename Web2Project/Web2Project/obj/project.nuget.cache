@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "k2KaXBapXjAAYOLg8fTNKiXXcza0xA6P20k9WB2GmkDddjrnDldJp00qHqptK0JgpfBd7WVh+SllFp6SOhlnGQ==",
+  "dgSpecHash": "dmurRvO4Gk3mGKZpCIYs8vF/cfxuiaqw9FcSt0b2UCVWvBDL/lM6773seZoI2/d0XhO/F4SoGiIN17yjVRYulw==",
   "success": true,
   "projectFilePath": "D:\\Studije\\4\\WEB2\\Projekat\\WEB2\\Web2Project\\Web2Project\\Web2Project.csproj",
   "expectedPackageFiles": [
@@ -8,6 +8,7 @@
     "C:\\Users\\milos\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
     "C:\\Users\\milos\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\milos\\.nuget\\packages\\mailkit\\2.0.2\\mailkit.2.0.2.nupkg.sha512",
+    "C:\\Users\\milos\\.nuget\\packages\\microsoft.aspnet.signalr\\2.4.3\\microsoft.aspnet.signalr.2.4.3.nupkg.sha512",
     "C:\\Users\\milos\\.nuget\\packages\\microsoft.aspnetcore.authentication\\2.2.0\\microsoft.aspnetcore.authentication.2.2.0.nupkg.sha512",
     "C:\\Users\\milos\\.nuget\\packages\\microsoft.aspnetcore.authentication.abstractions\\2.2.0\\microsoft.aspnetcore.authentication.abstractions.2.2.0.nupkg.sha512",
     "C:\\Users\\milos\\.nuget\\packages\\microsoft.aspnetcore.authentication.core\\2.2.0\\microsoft.aspnetcore.authentication.core.2.2.0.nupkg.sha512",

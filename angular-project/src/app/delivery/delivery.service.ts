@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Order } from '../shared/models/order.model';
 import { Delivery } from './models/delivery.model';
+import { OrderConfirmation } from './models/orderconfirmation.model';
 
 @Injectable({
   providedIn: 'root'
@@ -22,5 +23,9 @@ export class DeliveryService {
 
   getActiveOrder() : Observable<Order> {
     return this.http.get<Order>(environment.serverURL + '/api/orders/user/active');
+  }
+
+  confirmOrder(order:OrderConfirmation) : Observable<Order> {
+    return this.http.post<Order>(environment.serverURL + '/api/orders/confirm', order);
   }
 }

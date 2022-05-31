@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import { StringMap } from '@angular/compiler/src/compiler_facade_interface';
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
@@ -8,6 +9,8 @@ import { Product } from 'src/app/shared/models/product.model';
 import { UserService } from 'src/app/shared/user.service';
 import { BuyerService } from '../buyer.service';
 import { NewOrder, ProductInNewOrder } from '../models/newOrder.model';
+import * as signalR from '@microsoft/signalr';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-buyer',
@@ -16,7 +19,7 @@ import { NewOrder, ProductInNewOrder } from '../models/newOrder.model';
 })
 export class BuyerComponent implements OnInit {
 
-  constructor(private userservice: UserService, private service:BuyerService, private router: Router, private toastr: ToastrService) { }
+  constructor(private userservice: UserService, private service:BuyerService, private router: Router, private toastr: ToastrService, private datepipe:DatePipe) { }
   @Input() email = "";
 
   newOrderForm = new FormGroup({
@@ -31,6 +34,8 @@ export class BuyerComponent implements OnInit {
   foodItemsAvailabe:boolean = false;
   activeOrder:Order = new Order();
   orderMessage:string = '';
+  timerMin:string = "0";
+  timerSec:string = "0";
 
   ngOnInit(): void {
       // get all products for order
@@ -48,6 +53,34 @@ export class BuyerComponent implements OnInit {
     );
 
     //check for active order
+    this.checkForActiveOrder();
+  
+    let temp = localStorage.getItem('token');
+    let token = temp !== null ? temp : "";
+
+    const connection = new signalR.HubConnectionBuilder()  
+      .configureLogging(signalR.LogLevel.Information)  
+      .withUrl(environment.serverURL + '/inform', {
+        skipNegotiation: true,
+        transport: signalR.HttpTransportType.WebSockets,
+        accessTokenFactory: () => token
+      })  
+      .build();  
+  
+    connection.start().then(function () {  
+      console.log('SignalR Connected!');  
+    }).catch(function (err) {  
+      return console.error(err.toString());  
+    });  
+  
+    connection.on("BroadcastMessage", () => {  
+      this.ngOnInit();  
+    }); 
+
+    this.timerTick();
+  }
+
+  checkForActiveOrder(){
     this.service.getActiveOrder().subscribe(
       (data) => {
         if(data === null)
@@ -60,9 +93,7 @@ export class BuyerComponent implements OnInit {
           this.activeOrder = data;
           this.hasActiveOrder = true;
           this.orderMessage = "Trenutna";
-          this.activeOrder.orderTime = new Date(data.orderTime).toLocaleDateString('en-GB') + " " + new Date(data.orderTime).toLocaleTimeString();
-          if(this.activeOrder.deliveryEmail)
-          this.activeOrder.deliveryTime = new Date(data.deliveryTime).toLocaleDateString('en-GB') + " " + new Date(data.deliveryTime).toLocaleTimeString();
+          this.timerTick();
         }
       },
       (error) => {
@@ -106,6 +137,45 @@ export class BuyerComponent implements OnInit {
         this.toastr.error(error.error, 'Greska pri narucivanju');
       }
     );
+  }
+
+  interval:any = null;
+
+  async timerTick(){
+    if(this.interval === null){
+      this.interval = setInterval(() => {
+        if(this.hasActiveOrder){
+          let now = new Date();
+          let before = this.activeOrder.deliveryTime;
+          this.datepipe.transform(now);
+
+          if(now.getTime() > new Date(before).getTime())
+            this.stopTimer();
+
+          let timeSec = (new Date(before).getTime() - now.getTime())  / 1000;
+          var timerMin = Math.floor(timeSec / 60);
+          var timerSec = Math.floor(timeSec - timerMin * 60);
+          if(timerMin >= 10)
+            this.timerMin = timerMin.toString();
+          else
+            this.timerMin = "0" + timerMin.toString();
+          if(timerSec >= 10)
+            this.timerSec = timerSec.toString();
+          else
+            this.timerSec = "0" + timerSec.toString();
+        }
+        else{
+          this.stopTimer();
+        }
+      },1000)
+    }
+  }
+
+  stopTimer(){
+    clearInterval(this.interval);
+    this.interval = null;
+    this.hasActiveOrder = false;
+    this.activeOrder = new Order();
   }
 
 }

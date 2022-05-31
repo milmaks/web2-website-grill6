@@ -64,9 +64,14 @@ namespace Web2Project.Services
                     {
                         _ready = true;
                         order = _dbContext.Orders.Find(dto.Id);
-                        order.DeliveryEmail = dto.Email;
-                        Random rnd = new Random();
-                        order.DeliveryTime = DateTime.Now.AddMinutes(rnd.Next(5, 15));
+                        if (order.DeliveryEmail == null)
+                        {
+                            order.DeliveryEmail = dto.Email;
+                            Random rnd = new Random();
+                            order.DeliveryTime = DateTime.Now.AddMinutes(rnd.Next(5, 15));
+                            List<ProductInOrder> products = _dbContext.ProductInOrder.Where(prodInOrder => prodInOrder.OrderId == order.Id).ToList();
+                            _dbContext.SaveChanges();
+                        }
                     }
                 }
                 _ready = false;
@@ -93,7 +98,7 @@ namespace Web2Project.Services
                     return _mapper.Map<OrderDto>(order);
                 }
 
-                if (order.DeliveryTime > order.OrderTime)
+                if (order.DeliveryTime > DateTime.Now)
                 {
                     List<ProductInOrder> products = _dbContext.ProductInOrder.Where(prodInOrder => prodInOrder.OrderId == order.Id).ToList();
                     return _mapper.Map<OrderDto>(order);
@@ -106,6 +111,11 @@ namespace Web2Project.Services
         public List<OrderDto> GetAllUnconfirmedOrders()
         {
             List<Order> orders = _dbContext.Orders.Where(order => order.DeliveryEmail == null).ToList();
+            foreach (var order in orders)
+            {
+                List<ProductInOrder> products = _dbContext.ProductInOrder.Where(prodInOrder => prodInOrder.OrderId == order.Id).ToList();
+            }
+            
             return _mapper.Map<List<OrderDto>>(orders);
         }
     }

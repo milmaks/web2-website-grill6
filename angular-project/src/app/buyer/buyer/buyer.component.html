@@ -22,6 +22,9 @@
                     <div class="col-sm">
                         Vreme dostave
                     </div>
+                    <div class="col-sm">
+                        Dostavljac
+                    </div>
                 </ng-container>
                 <div class="col-sm">
                     Porucena hrana
@@ -32,17 +35,25 @@
                 <div class="col-sm">
                     Status
                 </div>
+                <ng-container *ngIf="this.activeOrder.deliveryEmail">
+                    <div class="col-sm">
+                        Tajmer
+                    </div>
+                </ng-container>
             </div>
             <div class="row">
                 <div class="col-sm">
                     {{this.activeOrder.address}}
                 </div>
                 <div class="col-sm">
-                    {{this.activeOrder.orderTime}}
+                    {{this.activeOrder.orderTime | customDate}}
                 </div>
                 <ng-container *ngIf="this.activeOrder.deliveryEmail">
                     <div class="col-sm">
-                        {{this.activeOrder.deliveryTime}}
+                        {{this.activeOrder.deliveryTime | customDate}}
+                    </div>
+                    <div class="col-sm">
+                        {{this.activeOrder.deliveryEmail}}
                     </div>
                 </ng-container>
                 <div class="col-sm">
@@ -56,6 +67,9 @@
                 <ng-container *ngIf="this.activeOrder.deliveryEmail;else inProgress">
                     <div class="col-sm">
                         Aktivna
+                    </div>
+                    <div class="col-sm">
+                        {{this.timerMin}}:{{this.timerSec}}
                     </div>
                 </ng-container>
                 <ng-template #inProgress>

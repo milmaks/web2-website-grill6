@@ -23,6 +23,7 @@ using Web2Project.Infrastructure;
 using Web2Project.Infrastructure.Configurations;
 using Web2Project.Interfaces;
 using Web2Project.Mapping;
+using Web2Project.Models;
 using Web2Project.Services;
 
 namespace Web2Project
@@ -85,6 +86,19 @@ namespace Web2Project
                    ValidIssuer = "https://localhost:44304", //odredjujemo koji server je validni izdavalac
                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["SecretKey"]))//navodimo privatni kljuc kojim su potpisani nasi tokeni
                };
+
+               options.Events = new JwtBearerEvents
+               {
+                   OnMessageReceived = context =>
+                   {
+                       var accessToken = context.Request.Query["access_token"];
+                       if (!string.IsNullOrEmpty(accessToken))
+                       {
+                           context.Token = accessToken;
+                       }
+                       return Task.CompletedTask;
+                   }
+               };
            });
 
             services.AddCors(options =>
@@ -96,6 +110,8 @@ namespace Web2Project
                            .AllowCredentials();
                 });
             });
+
+            services.AddSignalR();
 
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IDeliveryService, DeliveryService>();
@@ -117,6 +133,7 @@ namespace Web2Project
 
             IMapper mapper = mapperConfig.CreateMapper();
             services.AddSingleton(mapper);
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -138,25 +155,17 @@ namespace Web2Project
                 FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"Resources")),
                 RequestPath = new PathString("/Resources")
             });
-            //app.UseStaticFiles();
-            //app.UseStaticFiles(new StaticFileOptions() 
-            //{ 
-
-            //    OnPrepareResponse = context => {  
-            //    context.Context.Response.Headers.Add("Cache-Control", "no-cache, no-store"); 
-            //    context.Context.Response.Headers.Add("Expires", "-1"); 
-            //    } 
-                
-            //});
 
             app.UseRouting();
 
             app.UseAuthentication();
             app.UseAuthorization();
 
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<BroadcastHub>("/inform");
             });
         }
     }

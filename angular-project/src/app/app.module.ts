@@ -20,6 +20,8 @@ import { DeliveryComponent } from './delivery/delivery/delivery.component';
 import {MatExpansionModule} from '@angular/material/expansion';
 import { AuthInterceptor } from './auth/auth.interceptor';
 import { CookieService } from 'ngx-cookie-service';
+import { DatePipe } from '@angular/common';
+import { CustomDatePipe } from './shared/custom.datepipe';
 
 @NgModule({
   declarations: [
@@ -32,7 +34,8 @@ import { CookieService } from 'ngx-cookie-service';
     DashboardComponent,
     BuyerComponent,
     AdministratorComponent,
-    DeliveryComponent
+    DeliveryComponent,
+    CustomDatePipe
   ],
   imports: [
     BrowserModule,
@@ -53,7 +56,8 @@ import { CookieService } from 'ngx-cookie-service';
     provide: HTTP_INTERCEPTORS,
     useClass: AuthInterceptor,
     multi: true,
-    }
+    },
+    DatePipe
   ],
   bootstrap: [AppComponent]
 })

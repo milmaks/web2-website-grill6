@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +8,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Web2Project.Dto;
 using Web2Project.Interfaces;
+using Web2Project.Models;
 
 namespace Web2Project.Controllers
 {
@@ -15,10 +17,12 @@ namespace Web2Project.Controllers
     public class OrdersController : ControllerBase
     {
         private readonly IOrderService _orderService;
+        private readonly IHubContext<BroadcastHub, IHubClient> _hubContext;
 
-        public OrdersController(IOrderService orderService)
+        public OrdersController(IOrderService orderService, IHubContext<BroadcastHub, IHubClient> hubContext)
         {
             _orderService = orderService;
+            _hubContext = hubContext;
         }
 
         [HttpGet]
@@ -42,14 +46,17 @@ namespace Web2Project.Controllers
 
         [HttpPost("confirm")]
         [Authorize(Roles = "delivery")]
-        public IActionResult ConfirmOrder([FromBody] OrderConfirmationDto dto)
+        public async Task<IActionResult> ConfirmOrder([FromBody] OrderConfirmationDto dto)
         {
             OrderDto order = _orderService.ConfirmOrder(dto);
 
             if (order != null)
-                return Ok();
+            {
+                await _hubContext.Clients.All.BroadcastMessage();
+                return Ok(order);  
+            }
             else
-                return StatusCode(409);
+                return StatusCode(204);
         }
 
         [HttpGet("unconfirmed")]

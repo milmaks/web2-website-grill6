@@ -129,7 +129,7 @@
     <app-buyer [email]="email"></app-buyer>
 </div>
 <div *ngIf="this.role == 'delivery'">
-    <app-delivery></app-delivery>
+    <app-delivery [email]="email"></app-delivery>
 </div>
 <div *ngIf="this.role == 'administrator'">
     <app-administrator></app-administrator>
