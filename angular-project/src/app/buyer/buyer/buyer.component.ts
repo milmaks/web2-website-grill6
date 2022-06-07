@@ -39,6 +39,9 @@ export class BuyerComponent implements OnInit {
 
   ngOnInit(): void {
       // get all products for order
+      this.foodItems = [];
+      this.foodItemsMap = new Map<number,Product>(); 
+
       this.userservice.getAllProducts().subscribe(
       (data) => {
         this.foodItemsAvailabe = true;
@@ -55,6 +58,10 @@ export class BuyerComponent implements OnInit {
     //check for active order
     this.checkForActiveOrder();
   
+    this.timerTick();
+  }
+
+  connectWithSignalR(){
     let temp = localStorage.getItem('token');
     let token = temp !== null ? temp : "";
 
@@ -75,9 +82,7 @@ export class BuyerComponent implements OnInit {
   
     connection.on("BroadcastMessage", () => {  
       this.ngOnInit();  
-    }); 
-
-    this.timerTick();
+    });
   }
 
   checkForActiveOrder(){
@@ -93,6 +98,7 @@ export class BuyerComponent implements OnInit {
           this.activeOrder = data;
           this.hasActiveOrder = true;
           this.orderMessage = "Trenutna";
+          this.connectWithSignalR();
           this.timerTick();
         }
       },
@@ -142,7 +148,7 @@ export class BuyerComponent implements OnInit {
   interval:any = null;
 
   async timerTick(){
-    if(this.interval === null){
+    if(this.interval === null && this.activeOrder.deliveryEmail){
       this.interval = setInterval(() => {
         if(this.hasActiveOrder){
           let now = new Date();

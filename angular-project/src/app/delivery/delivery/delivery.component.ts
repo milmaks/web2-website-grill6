@@ -33,6 +33,9 @@ export class DeliveryComponent implements OnInit {
   timerSec:string = "0";
 
   ngOnInit(): void {
+    this.foodItems = [];
+    this.foodItemsMap = new Map<number,Product>(); 
+
     this.service.getDeliveryInfo().subscribe(
       (data : Delivery) => {
         if(data.status == 0)

@@ -24,6 +24,7 @@ namespace Web2Project.Services
         }
         public List<OrderDto> GetAllOrders()
         {
+            List<ProductInOrder> products = _dbContext.ProductInOrder.ToList();
             return _mapper.Map<List<OrderDto>>(_dbContext.Orders.ToList());
         }
 
@@ -83,6 +84,7 @@ namespace Web2Project.Services
 
         public List<OrderDto> GetOrdersByEmail(string email)
         {
+            List<ProductInOrder> products = _dbContext.ProductInOrder.ToList();
             return _mapper.Map<List<OrderDto>>(_dbContext.Orders.Where(order => order.BuyerEmail == email || order.DeliveryEmail == email));
         }
 
