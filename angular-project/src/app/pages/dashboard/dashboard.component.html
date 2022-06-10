@@ -12,6 +12,7 @@
       </mat-expansion-panel-header>
         
       <div class="card-body p-md-3">
+        <ng-container *ngIf="this.role != 'social';else socialUser">
         <form  [formGroup]="changeUserForm">
 
           <div class="row">
@@ -43,8 +44,9 @@
                   <button class="btn btn-primary btn-lg" (click)="changeProfilePicture()" type="submit" >Izmeni sliku</button>
                 </div>
               </form>
-            </div>
 
+            </div>
+            
             <div class="col-sm">
                 <div class="form-outline ">
                     <input type="text" formControlName="Username" class="form-control form-control-lg" />
@@ -75,9 +77,61 @@
             </div>
           </div>
         </form>
+      </ng-container>
+      <ng-template #socialUser>
+        <form  [formGroup]="changeSocialUserForm">
+
+          <div class="row">
+
+            <div class="col-sm">
+                <img style="object-fit:cover;" width="450" height="450" [src]="this.profilePicture"/>
+            </div>
+
+            <div class="col-sm">
+
+              <div class="form-outline ">
+                <input type="text" formControlName="Name" class="form-control form-control-lg" />
+                <label class="form-label" for="firstName">Ime</label>
+              </div>
+
+              <div class="form-outline ">
+                <input type="text" formControlName="Lastname" class="form-control form-control-lg" />
+                <label class="form-label" for="lastName">Prezime</label>
+              </div>
+
+              <div class="form-outline datepicker ">
+                <input type="date" formControlName="BirthDate" class="form-control form-control-lg" id="birthdayDate" />
+                <label for="birthdayDate" class="form-label">Datum rođenja</label>
+              </div>
+              
+            </div>
+            
+            <div class="col-sm">
+                <div class="form-outline ">
+                    <input type="text" formControlName="Username" class="form-control form-control-lg" />
+                    <label class="form-label" for="username">Korisničko ime</label>
+                 </div>
+
+                <div class="form-outline ">
+                    <input type="text" formControlName="Address" class="form-control form-control-lg" />
+                    <label class="form-label" for="homeAddress">Adresa</label>
+                </div>
+
+                <div class="form-outline">
+                    <input type="email" readonly="true" formControlName="Email" class="form-control form-control-lg" />
+                    <label class="form-label" for="emailAddress">Email</label>
+                </div>
+                
+                <button class="btn btn-primary btn-lg" (click)="onSubmit()" type="submit" >Izmeni profil</button>
+            </div>
+          </div>
+        </form>
+      </ng-template>
   </div>
     
     </mat-expansion-panel>
+
+    <ng-container *ngIf="this.role != 'social'">
 
     <mat-expansion-panel (opened)="panelOpenState1 = true"
                          (closed)="panelOpenState1 = false">
@@ -122,10 +176,11 @@
       </div>
     
     </mat-expansion-panel>
+  </ng-container>
     
   </mat-accordion>
   
-<div *ngIf="this.role == 'buyer'">
+<div *ngIf="this.role == 'buyer' || this.role == 'social'">
     <app-buyer [email]="email"></app-buyer>
 </div>
 <div *ngIf="this.role == 'delivery'">

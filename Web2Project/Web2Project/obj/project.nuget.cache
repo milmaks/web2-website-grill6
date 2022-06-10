@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "eLDngc1IZQZIiOMylKKpvKea2a4xqgs/vVZuN4rix7pM2VhT3/x+u5p/QjUdDrRtihA5xuIKFRxBhacAdJp+Aw==",
+  "dgSpecHash": "WvISUj7jons/1UydtR9MPOig/DkCJ5tvUNfd1eipX6GGfQ6+Jcpod89Fp5ahRzKFbwGyJUDJZ9sglwFhyiCUTA==",
   "success": true,
   "projectFilePath": "D:\\Studije\\4\\WEB2\\Projekat\\WEB2\\Web2Project\\Web2Project\\Web2Project.csproj",
   "expectedPackageFiles": [
@@ -12,6 +12,7 @@
     "C:\\Users\\milos\\.nuget\\packages\\microsoft.aspnetcore.authentication\\2.2.0\\microsoft.aspnetcore.authentication.2.2.0.nupkg.sha512",
     "C:\\Users\\milos\\.nuget\\packages\\microsoft.aspnetcore.authentication.abstractions\\2.2.0\\microsoft.aspnetcore.authentication.abstractions.2.2.0.nupkg.sha512",
     "C:\\Users\\milos\\.nuget\\packages\\microsoft.aspnetcore.authentication.core\\2.2.0\\microsoft.aspnetcore.authentication.core.2.2.0.nupkg.sha512",
+    "C:\\Users\\milos\\.nuget\\packages\\microsoft.aspnetcore.authentication.google\\5.0.17\\microsoft.aspnetcore.authentication.google.5.0.17.nupkg.sha512",
     "C:\\Users\\milos\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\5.0.17\\microsoft.aspnetcore.authentication.jwtbearer.5.0.17.nupkg.sha512",
     "C:\\Users\\milos\\.nuget\\packages\\microsoft.aspnetcore.cryptography.internal\\2.2.0\\microsoft.aspnetcore.cryptography.internal.2.2.0.nupkg.sha512",
     "C:\\Users\\milos\\.nuget\\packages\\microsoft.aspnetcore.dataprotection\\2.2.0\\microsoft.aspnetcore.dataprotection.2.2.0.nupkg.sha512",

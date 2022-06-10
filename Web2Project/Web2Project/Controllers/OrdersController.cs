@@ -33,7 +33,7 @@ namespace Web2Project.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "buyer")]
+        [Authorize(Roles = "buyer,social")]
         public IActionResult NewOrder([FromBody] NewOrderDto dto)
         {
             NewOrderDto newOrder = _orderService.NewOrder(dto);
@@ -67,7 +67,7 @@ namespace Web2Project.Controllers
         }
 
         [HttpGet("user")]
-        [Authorize(Roles = "delivery,buyer")]
+        [Authorize(Roles = "delivery,buyer,social")]
         public IActionResult GetUsersOrders()
         {
             string userEmail = "";
@@ -84,7 +84,7 @@ namespace Web2Project.Controllers
         }
 
         [HttpGet("user/active")]
-        [Authorize(Roles = "delivery,buyer")]
+        [Authorize(Roles = "delivery,buyer,social")]
         public IActionResult GetUsersActiveOrder()
         {
             string userEmail = "";

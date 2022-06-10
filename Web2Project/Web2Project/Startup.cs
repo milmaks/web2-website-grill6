@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -100,6 +101,15 @@ namespace Web2Project
                    }
                };
            });
+
+            //services.AddAuthentication()
+            //.AddGoogle("google", opt =>
+            //{
+            //    var googleAuth = Configuration.GetSection("Authentication:Google");
+            //    opt.ClientId = googleAuth["ClientId"];
+            //    opt.ClientSecret = googleAuth["ClientSecret"];
+            //    opt.SignInScheme = IdentityConstants.ExternalScheme;
+            //});
 
             services.AddCors(options =>
             {

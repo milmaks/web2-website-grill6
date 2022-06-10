@@ -33,6 +33,16 @@ export class DashboardComponent implements OnInit {
     passwordRep: new FormControl('', Validators.compose([Validators.required, Validators.minLength(4)]))
   });
 
+  changeSocialUserForm = new FormGroup({
+    Username: new FormControl('', Validators.required),
+    Name: new FormControl('', Validators.required),
+    Lastname: new FormControl('', Validators.required),
+    BirthDate: new FormControl('', Validators.required),
+    Address: new FormControl('', Validators.required),
+    Email: new FormControl('', Validators.compose([Validators.required, Validators.email])),
+    Type: new FormControl('', Validators.required)
+  });
+
   changePasswordForm = new FormGroup({
     PasswordOld: new FormControl('', Validators.compose([Validators.required, Validators.minLength(4)])),
     passwordRepOld: new FormControl('', Validators.compose([Validators.required, Validators.minLength(4)])),
@@ -47,20 +57,39 @@ export class DashboardComponent implements OnInit {
   email:string = "";
 
   ngOnInit(): void {
+    const temp = localStorage.getItem('token');
+    const token = temp !== null ? temp : "";
+    this.decoded = jwt_decode(token);
+    this.role = this.decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+
+    
     //ucitavanje elemenata za izmenu
     this.service.getUserInfo().subscribe(
       (data : Register) => {
-        this.changeUserForm.setValue({
-          Username: data.username,
-          Name: data.name,
-          Lastname: data.lastname,
-          BirthDate: new Date(data.birthDate).toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' ),
-          Address: data.address,
-          Email: data.email,
-          Type: data.type,
-          Password: "",
-          passwordRep: "",
-        })
+        if(this.role != 'social'){
+          this.changeUserForm.setValue({
+            Username: data.username,
+            Name: data.name,
+            Lastname: data.lastname,
+            BirthDate: new Date(data.birthDate).toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' ),
+            Address: data.address,
+            Email: data.email,
+            Type: data.type,
+            Password: "",
+            passwordRep: "",
+          });
+        }
+        else{
+          this.changeSocialUserForm.setValue({
+            Username: data.username,
+            Name: data.name,
+            Lastname: data.lastname,
+            BirthDate: new Date(data.birthDate).toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' ),
+            Address: data.address,
+            Email: data.email,
+            Type: data.type
+          });
+        }
 
         this.email = data.email;
       },
@@ -71,48 +100,76 @@ export class DashboardComponent implements OnInit {
       }
     );
     
-    const temp = localStorage.getItem('token');
-    const token = temp !== null ? temp : "";
-    this.decoded = jwt_decode(token);
-    this.role = this.decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
-
-    this.service.getImage().subscribe({
-      next: (data) =>{
-        if(data !== null){
-          let objectURL = URL.createObjectURL(data); 
-          this.profilePicture = this.sanitizer.bypassSecurityTrustUrl(objectURL);
+    if(this.role != 'social'){
+      this.service.getImage().subscribe({
+        next: (data) =>{
+          if(data !== null){
+            let objectURL = URL.createObjectURL(data); 
+            this.profilePicture = this.sanitizer.bypassSecurityTrustUrl(objectURL);
+          }
+          else
+          this.profilePicture = "../../../assets/images/profile-pic-placeholder.png";
+        },
+        error: (e) =>{
+          console.log(e);
+          this.profilePicture = "../../../assets/images/profile-pic-placeholder.png";
         }
-        else
-        this.profilePicture = "../../../assets/images/profile-pic-placeholder.png";
-      },
-      error: (e) =>{
-        this.profilePicture = "../../../assets/images/profile-pic-placeholder.png";
-      }
-    });
-
+      });
+    }
+    else {
+      this.service.getSocialImage().subscribe({
+        next: (data) =>{
+          if(data !== null){
+            this.profilePicture = data;
+          }
+          else
+            this.profilePicture = "../../../assets/images/profile-pic-placeholder.png";
+        },
+        error: (e) =>{
+          console.log(e);
+          this.profilePicture = "../../../assets/images/profile-pic-placeholder.png";
+        }
+      });
+    }
   }
 
   onSubmit(){
-    if(this.changeUserForm.invalid){
-      this.toastr.error('Invalid input, fill all fields correctly', 'Change failed.');
-      return;
+    let register:Register = new Register();
+    if(this.role != 'social'){
+      if(this.changeUserForm.invalid){
+        this.toastr.error('Invalid input, fill all fields correctly', 'Change failed.');
+        return;
+      }
+
+      register.username = this.changeUserForm.controls['Username'].value;
+      register.name = this.changeUserForm.controls['Name'].value;
+      register.lastname = this.changeUserForm.controls['Lastname'].value;
+      register.birthDate = this.changeUserForm.controls['BirthDate'].value;
+      register.address = this.changeUserForm.controls['Address'].value;
+      register.email = this.changeUserForm.controls['Email'].value;
+      register.password = this.changeUserForm.controls['Password'].value;
+      register.type = Number(this.changeUserForm.controls['Type'].value);
+
+      if(register.password != this.changeUserForm.controls['passwordRep'].value){
+        this.toastr.error('Passwords doesn\'t match.', 'Can\'t change.');
+        return;
+      }
+    }
+    else{
+      if(this.changeSocialUserForm.invalid){
+        this.toastr.error('Invalid input, fill all fields correctly', 'Change failed.');
+        return;
+      }
+
+      register.username = this.changeSocialUserForm.controls['Username'].value;
+      register.name = this.changeSocialUserForm.controls['Name'].value;
+      register.lastname = this.changeSocialUserForm.controls['Lastname'].value;
+      register.birthDate = this.changeSocialUserForm.controls['BirthDate'].value;
+      register.address = this.changeSocialUserForm.controls['Address'].value;
+      register.email = this.changeSocialUserForm.controls['Email'].value;
+      register.type = Number(this.changeSocialUserForm.controls['Type'].value);
     }
 
-    let register:Register = new Register();
-    register.username = this.changeUserForm.controls['Username'].value;
-    register.name = this.changeUserForm.controls['Name'].value;
-    register.lastname = this.changeUserForm.controls['Lastname'].value;
-    register.birthDate = this.changeUserForm.controls['BirthDate'].value;
-    register.address = this.changeUserForm.controls['Address'].value;
-    register.email = this.changeUserForm.controls['Email'].value;
-    register.password = this.changeUserForm.controls['Password'].value;
-    register.type = Number(this.changeUserForm.controls['Type'].value);
-    
-    if(register.password != this.changeUserForm.controls['passwordRep'].value){
-      this.toastr.error('Passwords doesn\'t match.', 'Can\'t change.');
-      return;
-    }
-    
     this.service.changeUserInfo(register).subscribe(
       (_data : Token) => {
         localStorage.setItem('token', _data.token);
@@ -127,6 +184,7 @@ export class DashboardComponent implements OnInit {
             this.toastr.error(error.error, 'Change failed.');
           else
             this.toastr.error('Error ocured during change. Try again', 'Change failed.');
+          console.log(error);
       }
     );
   }

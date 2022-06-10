@@ -28,4 +28,8 @@ export class DeliveryService {
   confirmOrder(order:OrderConfirmation) : Observable<Order> {
     return this.http.post<Order>(environment.serverURL + '/api/orders/confirm', order);
   }
+
+  getPreviousOrders() : Observable<Order[]> {
+    return this.http.get<Order[]>(environment.serverURL + '/api/orders/user');
+  }
 }

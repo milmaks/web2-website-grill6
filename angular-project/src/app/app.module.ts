@@ -22,6 +22,9 @@ import { AuthInterceptor } from './auth/auth.interceptor';
 import { CookieService } from 'ngx-cookie-service';
 import { DatePipe } from '@angular/common';
 import { CustomDatePipe } from './shared/custom.datepipe';
+import { SocialLoginModule, SocialAuthServiceConfig, FacebookLoginProvider, GoogleLoginProvider } from '@abacritt/angularx-social-login';
+
+
 
 @NgModule({
   declarations: [
@@ -47,7 +50,8 @@ import { CustomDatePipe } from './shared/custom.datepipe';
     BrowserAnimationsModule,
     FormsModule,
     HttpClientModule,
-    MatExpansionModule
+    MatExpansionModule,
+    SocialLoginModule
   ],
   providers: [
     CookieService,
@@ -57,7 +61,30 @@ import { CustomDatePipe } from './shared/custom.datepipe';
     useClass: AuthInterceptor,
     multi: true,
     },
-    DatePipe
+    DatePipe,
+    {
+      provide: 'SocialAuthServiceConfig',
+      useValue: {
+        autoLogin: false,
+        providers: [
+          {
+            id: FacebookLoginProvider.PROVIDER_ID,
+            provider: new FacebookLoginProvider(
+              '761816601515091'
+            )
+          },
+          {
+            id: GoogleLoginProvider.PROVIDER_ID,
+            provider: new GoogleLoginProvider(
+              '1036629619164-i5i29pkd87dooqqdiog8ud46ddbpui98.apps.googleusercontent.com'
+            )
+          }
+        ],
+        onError: (err) => {
+          console.error(err);
+        }
+      } as SocialAuthServiceConfig,
+    }
   ],
   bootstrap: [AppComponent]
 })

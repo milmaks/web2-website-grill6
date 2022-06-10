@@ -45,7 +45,7 @@ export class AdministratorComponent implements OnInit {
         this.toastr.error(error.error, 'Getting informations failed.');
       });
 
-      // get all products for order
+    // get all products for order
     this.userservice.getAllProducts().subscribe(
       (data) => {
         for(let p of data){
@@ -57,11 +57,10 @@ export class AdministratorComponent implements OnInit {
         console.log("error")
       }
     );
-    //console.log(this.foodItemsMap);
+
     this.service.getAllOrders().subscribe(
       (data : Order[]) => {
         this.orders = data;
-        console.log(this.orders);
         this.now = new Date();
         for(let o of this.orders){
           if(o.deliveryEmail){

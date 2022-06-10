@@ -47,6 +47,18 @@ namespace Web2Project.Services
             if(user == null)
                 return null;
 
+            if(user.Type == UserType.Social)
+            {
+                user.Name = updatedUser.Name;
+                user.Lastname = updatedUser.Lastname;
+                user.BirthDate = updatedUser.BirthDate;
+                user.Address = updatedUser.Address;
+                user.Username = updatedUser.Username;
+
+                _dbContext.SaveChanges();
+                return GetToken(user);
+            }
+
             if (BCrypt.Net.BCrypt.Verify(updatedUser.Password, user.Password))
             {
                 user.Name = updatedUser.Name;
@@ -130,9 +142,20 @@ namespace Web2Project.Services
 
         public TokenDto Login(UserLogInDto dto)
         {
-            User user = _dbContext.Users.Find(dto.Email);
+            User user = null;
+            try
+            {
+                user = _dbContext.Users.Find(dto.Email);
+            }
+            catch (Exception)
+            {
+
+            }
 
             if (user == null)
+                return null;
+
+            if (user.Type == UserType.Social)
                 return null;
 
             if (BCrypt.Net.BCrypt.Verify(dto.Password, user.Password))//Uporedjujemo hes pasvorda iz baze i unetog pasvorda
@@ -145,6 +168,43 @@ namespace Web2Project.Services
             }
         }
 
+        public TokenDto SocialLogin(SocialLoginUserDto dto)
+        {
+            User user = null;
+            try
+            {
+                user = _dbContext.Users.Find(dto.Email);
+            }
+            catch (Exception)
+            {
+
+            }
+
+            if (user == null)
+            {
+                user = new User();
+                user.Email = dto.Email;
+                user.Password = "";
+                user.Name = dto.Name;
+                user.Lastname = dto.Lastname;
+                user.ImagePath = dto.PhotoUrl;
+                user.BirthDate = new DateTime();
+                user.Address = "";
+                user.Type = UserType.Social;
+                _dbContext.Users.Add(user);
+                _dbContext.SaveChanges();
+
+                return GetToken(user);
+            }
+            else
+            {
+                if(user.Type == UserType.Social)
+                    return GetToken(user);
+            }
+
+            return null;
+        }
+
         private TokenDto GetToken(User user)
         {
             List<Claim> claims = new List<Claim>();
@@ -155,6 +215,8 @@ namespace Web2Project.Services
                 claims.Add(new Claim(ClaimTypes.Role, "delivery")); //Add user type to claim
             if (user.Type == UserType.Buyer)
                 claims.Add(new Claim(ClaimTypes.Role, "buyer")); //Add user type to claim
+            if (user.Type == UserType.Social)
+                claims.Add(new Claim(ClaimTypes.Role, "social")); //Add user type to claim
             claims.Add(new Claim(ClaimTypes.Name, user.Name + " " + user.Lastname));
             claims.Add(new Claim(ClaimTypes.NameIdentifier, user.Email));
             if(user.ImagePath != null)

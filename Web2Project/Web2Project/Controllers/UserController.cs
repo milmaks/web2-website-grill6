@@ -30,6 +30,12 @@ namespace Web2Project.Controllers
             return Ok(_userService.Login(dto));
         }
 
+        [HttpPost("social-login")]
+        public IActionResult Post([FromBody] SocialLoginUserDto dto)
+        {
+            return Ok(_userService.SocialLogin(dto));
+        }
+
         [HttpPost]
         public IActionResult Create([FromBody] UserDto dto)
         {
@@ -134,8 +140,49 @@ namespace Web2Project.Controllers
                 return NoContent();
             }
 
-            var file = Path.Combine(Directory.GetCurrentDirectory(), imagePath);
-            return PhysicalFile(file, "image/png");     
+            if (_userService.GetUser(userEmail).Type != Models.UserType.Social)
+            {
+                var file = Path.Combine(Directory.GetCurrentDirectory(), imagePath);
+                return PhysicalFile(file, "image/png");
+            }
+            else
+            {
+                return StatusCode(409);
+            }
+        }
+
+        [HttpGet("social-image")]
+        [ResponseCache(VaryByHeader = "User-Agent", Duration = 0)]
+        public IActionResult DownloadPath()
+        {
+            string userEmail = "";
+            try
+            {
+                userEmail = User.Claims.Where(a => a.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
+            }
+            catch (Exception)
+            {
+                return StatusCode(409);
+            }
+
+            string imagePath = _userService.GetUsersPicture(userEmail);
+            if (imagePath == string.Empty)
+            {
+                return StatusCode(409, "User does not exist.");
+            }
+            if (imagePath == null)
+            {
+                return NoContent();
+            }
+
+            if (_userService.GetUser(userEmail).Type != Models.UserType.Social)
+            {
+                return StatusCode(409);
+            }
+            else
+            {
+                return Ok(imagePath);
+            }
         }
     }
 }

@@ -18,5 +18,9 @@ export class BuyerService {
 
   placeNewOrder(newOrder : NewOrder) : Observable<Order> {
     return this.http.post<Order>(environment.serverURL + '/api/orders', newOrder);
-  } 
+  }
+  
+  getPreviousOrders() : Observable<Order[]> {
+    return this.http.get<Order[]>(environment.serverURL + '/api/orders/user');
+  }
 }

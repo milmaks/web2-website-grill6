@@ -139,3 +139,4 @@ D:\Studije\4\WEB2\Projekat\WEB2\Web2Project\Web2Project\obj\Debug\net5.0\Web2Pro
 D:\Studije\4\WEB2\Projekat\WEB2\Web2Project\Web2Project\bin\Debug\net5.0\MailKit.dll
 D:\Studije\4\WEB2\Projekat\WEB2\Web2Project\Web2Project\bin\Debug\net5.0\MimeKit.dll
 D:\Studije\4\WEB2\Projekat\WEB2\Web2Project\Web2Project\bin\Debug\net5.0\BouncyCastle.Crypto.dll
+D:\Studije\4\WEB2\Projekat\WEB2\Web2Project\Web2Project\bin\Debug\net5.0\Microsoft.AspNetCore.Authentication.Google.dll

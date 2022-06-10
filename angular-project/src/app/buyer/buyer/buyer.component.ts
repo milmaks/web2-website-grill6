@@ -28,6 +28,7 @@ export class BuyerComponent implements OnInit {
   });
   
   panelOpenState:boolean = false;
+  panelOpenState1:boolean = false;
   hasActiveOrder:boolean = false;
   foodItems: ProductsInOrder[] = [];
   foodItemsMap: Map<number,Product> = new Map<number,Product>(); 
@@ -36,6 +37,7 @@ export class BuyerComponent implements OnInit {
   orderMessage:string = '';
   timerMin:string = "0";
   timerSec:string = "0";
+  previousOrders:Order[] = [];
 
   ngOnInit(): void {
       // get all products for order
@@ -57,8 +59,22 @@ export class BuyerComponent implements OnInit {
 
     //check for active order
     this.checkForActiveOrder();
+
+    this.getPreviousOrders();
   
     this.timerTick();
+  }
+
+  getPreviousOrders(){
+    //get previous orders
+    this.service.getPreviousOrders().subscribe(
+      (data : Order[]) => {
+        this.previousOrders = data;
+      },
+      error => {
+        this.toastr.error(error.error, 'Getting informations failed.');
+      }
+    );
   }
 
   connectWithSignalR(){

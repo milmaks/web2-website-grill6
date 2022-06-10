@@ -8,6 +8,9 @@ import { UserService } from '../user.service';
 import jwt_decode from "jwt-decode";
 import { Observable } from 'rxjs';
 import { DomSanitizer } from '@angular/platform-browser';
+import { SocialUser } from "@abacritt/angularx-social-login";
+import { Register } from '../models/register.model';
+import { SocialLoginUser } from '../models/sociallogin.model';
 
 @Component({
   selector: 'app-navbar',
@@ -30,6 +33,8 @@ export class NavbarComponent implements OnInit {
   name: string = "";
   decoded:any;
   profilePicture:any;
+  user: SocialUser = new SocialUser;
+  role:string = "";
 
   ngOnInit(): void {
     this.service.subscriber$.subscribe(data => {
@@ -49,6 +54,33 @@ export class NavbarComponent implements OnInit {
     this.isSignin();
   }
 
+  externalLogin(){
+    this.service.signInWithFacebook()
+  .then(res => {
+    this.user = { ...res };
+    //console.log(user);
+
+    let login = new SocialLoginUser();
+    login.name = this.user.firstName;
+    login.lastname = this.user.lastName;
+    login.email = this.user.email;
+    login.photoUrl = this.user.photoUrl;
+    login.id = this.user.id;
+    
+    this.service.socialLogin(login).subscribe(
+      (data : Token) => {
+        localStorage.setItem('token', data.token);
+        this.isSignin();
+        this.router.navigateByUrl('/dashboard');
+      },
+      error => {
+          this.toastr.error('Incorrect email or password.', 'Authentication failed.');
+      }
+    );
+
+  }, error => console.log(error))
+  }
+
   isSignin() {
     console.log("isSignin")
     if (localStorage.getItem('token') != null){
@@ -57,20 +89,38 @@ export class NavbarComponent implements OnInit {
       this.token = temp !== null ? temp : "";
       this.decoded = jwt_decode(this.token);
       this.name = this.decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"];
+      this.role = this.decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
 
-      this.service.getImage().subscribe(
-        (data) =>{
-          if(data !== null){
-            let objectURL = URL.createObjectURL(data); 
-            this.profilePicture = this.sanitizer.bypassSecurityTrustUrl(objectURL);
+      if(this.role != 'social'){
+        this.service.getImage().subscribe(
+          (data) =>{
+            if(data !== null){
+              let objectURL = URL.createObjectURL(data); 
+              this.profilePicture = this.sanitizer.bypassSecurityTrustUrl(objectURL);
+            }
+            else
+            this.profilePicture = "../../../assets/images/profile-pic-placeholder.png";
+          },
+          error =>{
+            this.profilePicture = "../../../assets/images/profile-pic-placeholder.png";
           }
-          else
-          this.profilePicture = "../../../assets/images/profile-pic-placeholder.png";
-        },
-        error =>{
-          this.profilePicture = "../../../assets/images/profile-pic-placeholder.png";
-        }
-      );
+        );
+      }
+      else{
+        this.service.getSocialImage().subscribe({
+          next: (data) =>{
+            if(data !== null){
+              this.profilePicture = data;
+            }
+            else
+              this.profilePicture = "../../../assets/images/profile-pic-placeholder.png";
+          },
+          error: (e) =>{
+            console.log(e);
+            this.profilePicture = "../../../assets/images/profile-pic-placeholder.png";
+          }
+        });
+      }
     }
     else{
       this.show = false;
@@ -86,6 +136,10 @@ export class NavbarComponent implements OnInit {
 
       this.service.login(login).subscribe(
         (data : Token) => {
+          if(data === null){
+            this.toastr.error('Incorrect email or password.', 'Authentication failed.');
+            return;
+          }
           localStorage.setItem('token', data.token);
           this.isSignin();
           this.router.navigateByUrl('/dashboard');

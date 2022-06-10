@@ -128,6 +128,66 @@
                 </ng-template>
             </div>
         </mat-expansion-panel>
+
+        <mat-expansion-panel (opened)="panelOpenState1 = true"
+                         (closed)="panelOpenState1 = false">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+            Prethodne porudzbine  
+        </mat-panel-title>
+        <mat-panel-description>
+           &nbsp;&nbsp;&nbsp;{{panelOpenState1 ? 'skloni' : 'prikaži'}} porudzbine   
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+
+      <div class="card-body p-md-3">
+        <div class="row">
+            <div class="col-sm">
+                Adresa
+            </div>
+            <div class="col-sm">
+                Kupac
+            </div>
+            <div class="col-sm">
+                Vreme porucivanja
+            </div>
+            <div class="col-sm">
+                Vreme dostave
+            </div>
+            <div class="col-sm">
+                Porucena hrana
+            </div>
+            <div class="col-sm">
+                Ukupna cena
+            </div>
+        </div>
+        <ng-container *ngFor="let p of previousOrders">
+            <div class="row">
+                <div class="col-sm">
+                    {{p.address}}
+                </div>
+                <div class="col-sm">
+                    {{p.buyerEmail}}
+                </div>
+                <div class="col-sm">
+                    {{p.orderTime | customDate}}
+                </div>
+                <div class="col-sm">
+                    {{p.deliveryTime | customDate}}
+                </div>
+                <div class="col-sm">
+                    <ng-container *ngFor="let prod of p.productsInOrder">
+                        {{foodItemsMap.get(prod.productId)?.name!}}&nbsp;{{prod.quantity}}&nbsp;kom.<br/>
+                    </ng-container>
+                </div>
+                <div class="col-sm">
+                    {{p.price}}
+                </div>
+            </div>
+        </ng-container>
+      </div>
+
+    </mat-expansion-panel>
     </mat-accordion>
 <!--</ng-container>-->
 

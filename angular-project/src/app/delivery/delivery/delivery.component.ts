@@ -20,6 +20,7 @@ export class DeliveryComponent implements OnInit {
   @Input() email = "";
 
   panelOpenState:boolean = false;
+  panelOpenState1:boolean = false;
   status:string = "";
   hasActiveOrder:boolean = false;
   activeOrder:Order = new Order();
@@ -31,6 +32,7 @@ export class DeliveryComponent implements OnInit {
   hasUnconfirmedOrders:boolean = false;
   timerMin:string = "0";
   timerSec:string = "0";
+  previousOrders: Order[] = [];
 
   ngOnInit(): void {
     this.foodItems = [];
@@ -91,7 +93,20 @@ export class DeliveryComponent implements OnInit {
     else
       this.orderMess = "Dostupne porudzbine";
 
+    this.getPreviousOrders();
     this.timerTick();
+  }
+
+  getPreviousOrders(){
+    //get previous orders
+    this.service.getPreviousOrders().subscribe(
+      (data : Order[]) => {
+        this.previousOrders = data;
+      },
+      error => {
+        this.toastr.error(error.error, 'Getting informations failed.');
+      }
+    );
   }
 
   checkForUnconfirmedOrders(){
