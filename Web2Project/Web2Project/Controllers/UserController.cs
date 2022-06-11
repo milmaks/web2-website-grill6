@@ -1,13 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Security.Claims;
-using System.Threading.Tasks;
 using Web2Project.Dto;
 using Web2Project.Interfaces;
 
@@ -72,7 +69,6 @@ namespace Web2Project.Controllers
                 return StatusCode(409, $"Old password doesn\'t match.");
         }
 
-
         [HttpPost("change")]
         [Authorize]
         public IActionResult ChangeUserInfo([FromBody] UserDto dto)
@@ -112,7 +108,7 @@ namespace Web2Project.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Internal server error: {ex}");
+                return BadRequest(ex.Message + "No image attached");
             }
         }
 
@@ -135,6 +131,7 @@ namespace Web2Project.Controllers
             {
                 return StatusCode(409, "User does not exist.");
             }
+
             if(imagePath == null)
             {
                 return NoContent();

@@ -1,18 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
 
 namespace Web2Project.Dto
 {
     public class NewOrderDto
     {
         public long Id { get; set; }
+        [Required, RegularExpression("^(.+)@(.+)$")]
         public string BuyerEmail { get; set; }
+        [Required, MinLength(1, ErrorMessage = "At least one item required in order")]
         public List<ProductInOrderDto> ProductsInOrder { get; set; }
+        [Required]
         public string Address { get; set; }
         public string Comment { get; set; }
         public double Price { get; set; }
+        [Required]
         public DateTime OrderTime { get; set; }
     }
 }

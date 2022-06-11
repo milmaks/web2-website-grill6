@@ -4,11 +4,12 @@ import { Observable } from "rxjs";
 import { tap } from "rxjs/operators";
 import { Router } from "@angular/router";
 import { CookieService } from "ngx-cookie-service";
+import { UserService } from "../shared/user.service";
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
 
-    constructor(private router: Router) {
+    constructor(private router: Router, private service:UserService) {
 
     }
 
@@ -23,7 +24,7 @@ export class AuthInterceptor implements HttpInterceptor {
                     succ => { },
                     err => {
                         if (err.status == 401){
-                            console.log("interceptor");
+                            this.service.emitData1(false);
                             localStorage.removeItem('token');
                             this.router.navigate(['/']);
                         }

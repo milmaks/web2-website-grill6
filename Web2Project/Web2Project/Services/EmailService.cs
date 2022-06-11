@@ -1,10 +1,9 @@
 ﻿using MailKit.Net.Smtp;
 using MimeKit;
 using System;
-using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using Web2Project.Infrastructure.Configurations;
 using Web2Project.Interfaces;
 using Web2Project.Models;
@@ -61,16 +60,17 @@ namespace Web2Project.Services
             {
                 try
                 {
-                    client.Connect(_emailConfig.SmtpServer, _emailConfig.Port, true);
+                    client.Connect(_emailConfig.SmtpServer, _emailConfig.Port, false);
                     client.AuthenticationMechanisms.Remove("XOAUTH2");
                     client.Authenticate(_emailConfig.UserName, _emailConfig.Password);
 
                     client.Send(mailMessage);
                 }
-                catch
+                catch(Exception e)
                 {
                     //log an error message or throw an exception, or both.
-                    throw;
+                    Trace.WriteLine(e.Message);
+                    //throw;
                 }
                 finally
                 {

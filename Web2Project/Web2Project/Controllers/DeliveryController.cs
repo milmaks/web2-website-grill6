@@ -1,10 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using System.Threading.Tasks;
 using Web2Project.Dto;
 using Web2Project.Interfaces;
 
@@ -26,6 +23,7 @@ namespace Web2Project.Controllers
         public IActionResult GetDelivery()
         {
             DeliveryDto delivery = _deliveryService.GetDelivery(User.Claims.Where(a => a.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value);
+            
             if (delivery != null)
                 return Ok(delivery);
             else

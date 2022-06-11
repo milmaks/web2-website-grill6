@@ -45,7 +45,6 @@ export class NavbarComponent implements OnInit {
     this.service.subscriber1$.subscribe(data => {
       console.log("show false");
       this.show = data as boolean;
-      this.isSignin();
     });
     
     if (localStorage.getItem('token') != null){
@@ -66,6 +65,7 @@ export class NavbarComponent implements OnInit {
     login.email = this.user.email;
     login.photoUrl = this.user.photoUrl;
     login.id = this.user.id;
+    login.provider = this.user.provider;
     
     this.service.socialLogin(login).subscribe(
       (data : Token) => {

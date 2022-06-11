@@ -97,6 +97,7 @@ export class DashboardComponent implements OnInit {
           this.toastr.error(error.error, 'Failed to get user info.');
           localStorage.removeItem('token');
           this.router.navigateByUrl('/');
+          return;
       }
     );
     
