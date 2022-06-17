@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 using Web2Project.Dto;
 using Web2Project.Interfaces;
 
@@ -18,9 +19,9 @@ namespace Web2Project.Controllers
 
         [HttpGet]
         [Authorize(Roles = "administrator")]
-        public IActionResult GetAllDeliveryUsers()
+        public async Task<IActionResult> GetAllDeliveryUsers()
         {
-            return Ok(_administratorService.GetAllDeliveryUsers());
+            return Ok(await _administratorService.GetAllDeliveryUsers());
         }
 
         [HttpPost]

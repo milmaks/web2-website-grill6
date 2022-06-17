@@ -64,8 +64,8 @@ export class DashboardComponent implements OnInit {
 
     
     //ucitavanje elemenata za izmenu
-    this.service.getUserInfo().subscribe(
-      (data : Register) => {
+    this.service.getUserInfo().subscribe({
+      next: (data : Register) => {
         if(this.role != 'social'){
           this.changeUserForm.setValue({
             Username: data.username,
@@ -93,13 +93,13 @@ export class DashboardComponent implements OnInit {
 
         this.email = data.email;
       },
-      error => {
-          this.toastr.error(error.error, 'Failed to get user info.');
+      error: (error) => {
+          this.toastr.error(error.error, 'Preuzimanje informacija o korisniku neuspesno.');
           localStorage.removeItem('token');
           this.router.navigateByUrl('/');
           return;
       }
-    );
+    });
     
     if(this.role != 'social'){
       this.service.getImage().subscribe({
@@ -138,7 +138,7 @@ export class DashboardComponent implements OnInit {
     let register:Register = new Register();
     if(this.role != 'social'){
       if(this.changeUserForm.invalid){
-        this.toastr.error('Invalid input, fill all fields correctly', 'Change failed.');
+        this.toastr.error('Popuni sva polja pre izmene ispravno!');
         return;
       }
 
@@ -152,13 +152,13 @@ export class DashboardComponent implements OnInit {
       register.type = Number(this.changeUserForm.controls['Type'].value);
 
       if(register.password != this.changeUserForm.controls['passwordRep'].value){
-        this.toastr.error('Passwords doesn\'t match.', 'Can\'t change.');
+        this.toastr.error('Lozinke se ne podudaraju!');
         return;
       }
     }
     else{
       if(this.changeSocialUserForm.invalid){
-        this.toastr.error('Invalid input, fill all fields correctly', 'Change failed.');
+        this.toastr.error('Popuni sva polja pre izmene ispravno!');
         return;
       }
 
@@ -171,28 +171,28 @@ export class DashboardComponent implements OnInit {
       register.type = Number(this.changeSocialUserForm.controls['Type'].value);
     }
 
-    this.service.changeUserInfo(register).subscribe(
-      (_data : Token) => {
+    this.service.changeUserInfo(register).subscribe({
+      next: (_data : Token) => {
         localStorage.setItem('token', _data.token);
         this.ngOnInit();
-        this.toastr.success('Fields changed','Account update successful.');
+        this.toastr.success('Podaci naloga su uspesno izmenjeni.');
         this.service.emitData(register.name + " " + register.lastname);
         this.changeUserForm.controls['Password'].reset();
         this.changeUserForm.controls['passwordRep'].reset();
       },
-      error => {
+      error: (error) => {
           if(error.status == 409)
-            this.toastr.error(error.error, 'Change failed.');
+            this.toastr.error(error.error, 'Neuspesna izmena podataka naloga.');
           else
-            this.toastr.error('Error ocured during change. Try again', 'Change failed.');
+            this.toastr.error('Neuspesna izmena podataka naloga. Pokusajte ponovo.');
           console.log(error);
       }
-    );
+    });
   }
 
   onSubmitPass(){
     if(this.changePasswordForm.invalid){
-      this.toastr.error('Invalid input, fill all fields correctly', 'Change password failed.');
+      this.toastr.error('Popuni sva polja ispravno!');
       return;
     }
 
@@ -202,28 +202,28 @@ export class DashboardComponent implements OnInit {
     changepassword.newpassword = this.changePasswordForm.controls['PasswordNew'].value;
 
     if(changepassword.oldpassword != this.changePasswordForm.controls['passwordRepOld'].value){
-      this.toastr.error('Old passwords doesn\'t match.', 'Can\'t change.');
+      this.toastr.error('Unete stare sifre se ne podudaraju');
       return;
     }
 
     if(changepassword.newpassword != this.changePasswordForm.controls['passwordRepNew'].value){
-      this.toastr.error('New passwords doesn\'t match.', 'Can\'t change.');
+      this.toastr.error('Unete nove sifre se ne podudaraju');
       return;
     }
 
-    this.service.changeUserPassword(changepassword).subscribe(
-      (_data) => {
+    this.service.changeUserPassword(changepassword).subscribe({
+      next: (_data) => {
         this.router.navigateByUrl('/dashboard');
-        this.toastr.success('Password changed','Account update successful.')
+        this.toastr.success('Lozinka uspesno promenjena!')
         this.changePasswordForm.reset();
       },
-      error => {
+      error: (error) => {
           if(error.status == 409)
-            this.toastr.error(error.error, 'Change failed.');
+            this.toastr.error('Menjanje lozinke nije uspelo.');
           else
-            this.toastr.error('Error ocured during change. Try again', 'Change failed.');
+            this.toastr.error('Menjanje lozinke nije uspelo.');
       }
-    );
+    });
   }
 
   hasUpload(event:any){
@@ -236,16 +236,16 @@ export class DashboardComponent implements OnInit {
     const formData = new FormData();
     formData.append(this.changeUserForm.controls['Email'].value, fileToUpload, fileToUpload.name);
     
-    this.service.uploadImage(formData).subscribe(
-      (data) => {
-        this.toastr.success('Profile picture changed.', 'Changed succeeded.');
+    this.service.uploadImage(formData).subscribe({
+      next: (data) => {
+        this.toastr.success('Profilna slika je uspesno izmenjena');
         this.service.emitData("profilePicture");
         this.ngOnInit();
       },
-      error => {
-        this.toastr.error('Error ocured during image upload. Try again', 'Change failed.');
+      error: (error) => {
+        this.toastr.error('Menjanje slike nije uspelo.');
       }
-    );
+    });
   }
 }
 

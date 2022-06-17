@@ -26,9 +26,9 @@ namespace Web2Project.Controllers
 
         [HttpGet]
         [Authorize(Roles = "administrator")]
-        public IActionResult GetAllOrders()
+        public async Task<IActionResult> GetAllOrders()
         {
-            return Ok(_orderService.GetAllOrders());
+            return Ok(await _orderService.GetAllOrders());
         }
 
         [HttpPost]

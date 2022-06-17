@@ -44,18 +44,18 @@ export class BuyerComponent implements OnInit {
       this.foodItems = [];
       this.foodItemsMap = new Map<number,Product>(); 
 
-      this.userservice.getAllProducts().subscribe(
-      (data) => {
+      this.userservice.getAllProducts().subscribe({
+      next: (data) => {
         this.foodItemsAvailabe = true;
         for(let p of data){
           this.foodItems.push(new ProductsInOrder(p.id,0));
           this.foodItemsMap.set(p.id,p);
         }
       },
-      (error) => {
+      error: (error) => {
         this.foodItemsAvailabe = false;
       }
-    );
+      });
 
     //check for active order
     this.checkForActiveOrder();
@@ -67,14 +67,14 @@ export class BuyerComponent implements OnInit {
 
   getPreviousOrders(){
     //get previous orders
-    this.service.getPreviousOrders().subscribe(
-      (data : Order[]) => {
+    this.service.getPreviousOrders().subscribe({
+      next: (data : Order[]) => {
         this.previousOrders = data;
       },
-      error => {
-        this.toastr.error(error.error, 'Getting informations failed.');
+      error: (error) => {
+        this.toastr.error('Preuzimanje informacija o korisniku neuspesno.');
       }
-    );
+    });
   }
 
   connectWithSignalR(){
@@ -102,8 +102,8 @@ export class BuyerComponent implements OnInit {
   }
 
   checkForActiveOrder(){
-    this.service.getActiveOrder().subscribe(
-      (data) => {
+    this.service.getActiveOrder().subscribe({
+      next: (data) => {
         if(data === null)
         {
           this.activeOrder = new Order();
@@ -118,10 +118,10 @@ export class BuyerComponent implements OnInit {
           this.timerTick();
         }
       },
-      (error) => {
+      error: (error) => {
         this.toastr.error(error.error, 'Greska pri ucitavanju narudzbina');
       }
-    );
+    });
   }
 
   get priceDisplayValue(){
@@ -151,14 +151,14 @@ export class BuyerComponent implements OnInit {
         newOrder.productsInOrder.push(new ProductInNewOrder(0,p.productId,p.quantity));
     }
 
-    this.service.placeNewOrder(newOrder).subscribe(
-      (data) => {
+    this.service.placeNewOrder(newOrder).subscribe({
+      next: (data) => {
         this.ngOnInit();
       },
-      (error) => {
+      error: (error) => {
         this.toastr.error(error.error, 'Greska pri narucivanju');
       }
-    );
+    });
   }
 
   interval:any = null;

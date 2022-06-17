@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Web2Project.Dto;
 
 namespace Web2Project.Interfaces
@@ -13,6 +14,6 @@ namespace Web2Project.Interfaces
         UserDto ChnageUserPassword(UserPasswordChangeDto dto);
         bool AddUsersPicture(string email, string path);
         string GetUsersPicture(string email);
-        List<ProductDto> GetAllProducts();
+        Task<List<ProductDto>> GetAllProducts();
     }
 }

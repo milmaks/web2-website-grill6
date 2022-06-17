@@ -39,7 +39,7 @@ export class RegisterComponent implements OnInit {
   
   onSubmit() {
     if(this.registerForm.invalid){
-      this.toastr.error('Invalid input, fill all fields correctly', 'Registration failed.');
+      this.toastr.error('Popuni sva polja ispravno!');
       return;
     }
 
@@ -54,25 +54,25 @@ export class RegisterComponent implements OnInit {
     register.type = Number(this.registerForm.controls['Type'].value);
     
     if(register.password != this.registerForm.controls['passwordRep'].value){
-      this.toastr.error('Passwords doesn\'t match.', 'Registration failed.');
+      this.toastr.error('Lozinke se ne podudaraju!');
       return;
     }
     
-    this.service.register(register).subscribe(
-      (_data) => {
+    this.service.register(register).subscribe({
+      next: (_data) => {
         if (this.files.length !== 0) {
           this.uploadFile(this.files, register.email);
         }
         this.router.navigateByUrl('/');
-        this.toastr.success('You are now registrated','Registration successful.')
+        this.toastr.success('Registracija uspesna!')
       },
-      error => {
+      error: (error) => {
           if(error.status == 409)
-            this.toastr.error(error.error, 'Registration failed.');
+            this.toastr.error(error.error, 'Greska! Registracija nije uspela.');
           else
-            this.toastr.error('Error ocured during registration. Try again', 'Registration failed.');
+            this.toastr.error('Greska! Registracija nije uspela.');
       }
-    );
+    });
   }
 
   hasUpload(event:any){
@@ -84,14 +84,14 @@ export class RegisterComponent implements OnInit {
     const formData = new FormData();
     formData.append(email, fileToUpload, fileToUpload.name);
     
-    this.service.uploadImage(formData).subscribe(
-      (data) => {
-        this.message = 'Upload success.';
+    this.service.uploadImage(formData).subscribe({
+      next: (data) => {
+        this.message = 'Upload slike uspesan.';
       },
-      error => {
-        this.toastr.error('Error ocured during image upload. Try again', 'Registration failed.');
+      error: (error) => {
+        this.toastr.error('Greska tokom uploada slike!');
       }
-    );
+    });
   }
   
 }

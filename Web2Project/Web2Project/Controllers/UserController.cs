@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Security.Claims;
+using System.Threading.Tasks;
 using Web2Project.Dto;
 using Web2Project.Interfaces;
 
@@ -53,9 +54,9 @@ namespace Web2Project.Controllers
         }
 
         [HttpGet("products")]
-        public IActionResult GetAllProducts()
+        public async Task<IActionResult> GetAllProducts()
         {
-            return Ok(_userService.GetAllProducts());
+            return Ok(await _userService.GetAllProducts());
         }
 
         [HttpPost("change-password")]

@@ -19,22 +19,22 @@ export class MenuComponent implements OnInit {
   decoded:any;
 
   ngOnInit(): void {
-    this.service.getAllProducts().subscribe(
-      (data) => {
+    this.service.getAllProducts().subscribe({
+      next: (data) => {
         this.foodItemsAvailabe = true;
         this.foodItems = data;
       },
-      (error) => {
+      error: (error) => {
         this.foodItemsAvailabe = false;
       }
-    );
+    });
 
     if (localStorage.getItem('token') != null){
       const temp = localStorage.getItem('token');
       let token = temp !== null ? temp : "";
       this.decoded = jwt_decode(token);
       let role = this.decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
-      if(role == "buyer")
+      if(role == "buyer" || role == "social")
         this.canPurchase = true;
       else
       this.canPurchase = false;

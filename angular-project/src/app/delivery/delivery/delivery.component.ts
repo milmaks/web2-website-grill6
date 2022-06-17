@@ -38,36 +38,43 @@ export class DeliveryComponent implements OnInit {
     this.foodItems = [];
     this.foodItemsMap = new Map<number,Product>(); 
 
-    this.service.getDeliveryInfo().subscribe(
-      (data : Delivery) => {
-        if(data.status == 0)
+    this.service.getDeliveryInfo().subscribe({
+      next: (data : Delivery) => {
+        console.log(data.status);
+        if(data.status == 0){
           this.status = "Na cekanju";
+          return;
+        }
         if(data.status == 1)
           this.status = "Prihvacen";
-        if(data.status == 2)
+        if(data.status == 2){
           this.status = "Odbijen";
+          return;
+        }
       },
-      error => {
-        this.toastr.error(error.error, 'Getting informations failed.');
+      error: (error) => {
+        this.toastr.error('Preuzimanje informacija o dostavljacu neuspesno.');
+        return;
+      }
     });
 
-    // get all products for order
-    this.userservice.getAllProducts().subscribe(
-      (data) => {
+    // get all products
+    this.userservice.getAllProducts().subscribe({
+      next: (data) => {
         this.foodItemsAvailabe = true;
         for(let p of data){
           this.foodItems.push(new ProductsInOrder(p.id,0));
           this.foodItemsMap.set(p.id,p);
         }
       },
-      (error) => {
+      error: (error) => {
         this.foodItemsAvailabe = false;
       }
-    );
+    });
 
     //check for active order
-    this.service.getActiveOrder().subscribe(
-      (data) => {
+    this.service.getActiveOrder().subscribe({
+      next: (data) => {
         if(data === null)
         {
           this.activeOrder = new Order();
@@ -78,15 +85,12 @@ export class DeliveryComponent implements OnInit {
         else{
           this.activeOrder = data;
           this.hasActiveOrder = true;
-          //this.activeOrder.orderTime = new Date(data.orderTime).toLocaleDateString('en-GB') + " " + new Date(data.orderTime).toLocaleTimeString();
-          //if(this.activeOrder.deliveryEmail)
-          //this.activeOrder.deliveryTime = new Date(data.deliveryTime).toLocaleDateString('en-GB') + " " + new Date(data.deliveryTime).toLocaleTimeString();
         }
       },
-      (error) => {
+      error: (error) => {
         this.toastr.error(error.error, 'Greska pri ucitavanju aktivne narudzbine');
       }
-    );
+    });
     
     if(this.hasActiveOrder)
       this.orderMess = "Stanje aktivne porudzbine";
@@ -99,42 +103,39 @@ export class DeliveryComponent implements OnInit {
 
   getPreviousOrders(){
     //get previous orders
-    this.service.getPreviousOrders().subscribe(
-      (data : Order[]) => {
+    this.service.getPreviousOrders().subscribe({
+      next: (data : Order[]) => {
         this.previousOrders = data;
       },
-      error => {
-        this.toastr.error(error.error, 'Getting informations failed.');
+      error: (error) => {
+        this.toastr.error('Neuspesno preuzimanje prethodnih porudzbina.');
       }
-    );
+    });
   }
 
   checkForUnconfirmedOrders(){
-    this.service.getUnconfirmedOrders().subscribe(
-      (data) => {
+    this.service.getUnconfirmedOrders().subscribe({
+      next: (data) => {
         this.unconfirmedOrders = data;
         if(this.unconfirmedOrders.length == 0){
           this.hasUnconfirmedOrders = false;
         }
         else{
           this.hasUnconfirmedOrders = true;
-          this.unconfirmedOrders.forEach(element => {
-            //element.orderTime = new Date(element.orderTime).toLocaleDateString('en-GB') + " " + new Date(element.orderTime).toLocaleTimeString();
-          });
         }
       },
-      (error) => {
+      error: (error) => {
         this.toastr.error(error.error, 'Greska pri ucitavanju nepotvrdjenih narudzbina');
       }
-    );
+    });
   }
 
   takeOrder(id:number){
     let confirmation = new OrderConfirmation();
     confirmation.id = id;
     confirmation.email = this.email;
-    this.service.confirmOrder(confirmation).subscribe(
-      (data) => {
+    this.service.confirmOrder(confirmation).subscribe({
+      next: (data) => {
         if(data === null){
           this.toastr.error('Narudzbina nije vise dostupna pokusajte neku drugu');
           this.ngOnInit();
@@ -144,14 +145,12 @@ export class DeliveryComponent implements OnInit {
           this.activeOrder = data;
           this.hasActiveOrder = true;
           this.timerTick();
-          //this.activeOrder.orderTime = new Date(data.orderTime).toLocaleDateString('en-GB') + " " + new Date(data.orderTime).toLocaleTimeString();
-          //this.activeOrder.deliveryTime = new Date(data.deliveryTime).toLocaleDateString('en-GB') + " " + new Date(data.deliveryTime).toLocaleTimeString();
         }
       },
-      (error) => {
+      error: (error) => {
         this.toastr.error('Greska pri prihvatanju narudzbine');
       }
-    );
+    });
   }
 
   interval:any = null;

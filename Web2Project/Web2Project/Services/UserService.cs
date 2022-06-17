@@ -1,12 +1,13 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Text;
+using System.Threading.Tasks;
 using Web2Project.Dto;
 using Web2Project.Infrastructure;
 using Web2Project.Interfaces;
@@ -114,19 +115,14 @@ namespace Web2Project.Services
             }
         }
 
-        public List<ProductDto> GetAllProducts()
+        public async Task<List<ProductDto>> GetAllProducts()
         {
-            return _mapper.Map<List<ProductDto>>(_dbContext.Products.ToList());
+            return _mapper.Map<List<ProductDto>>(await _dbContext.Products.ToListAsync());
         }
 
         public UserDto GetUser(string email)
         {
-            User user = _dbContext.Users.Find(email);
-
-            if (user == null)
-                return null;
-            else
-                return _mapper.Map<UserDto>(user);
+            return _mapper.Map<UserDto>(_dbContext.Users.Find(email));
         }
 
         public string GetUsersPicture(string email)

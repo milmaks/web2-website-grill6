@@ -19,9 +19,7 @@ import { SocialLoginUser } from '../models/sociallogin.model';
 })
 export class NavbarComponent implements OnInit {
   
-  constructor(private service: UserService, private router: Router, private toastr: ToastrService, route:ActivatedRoute, private sanitizer: DomSanitizer) { 
-
-  }
+  constructor(private service: UserService, private router: Router, private toastr: ToastrService, route:ActivatedRoute, private sanitizer: DomSanitizer) {}
 
   loginForm = new FormGroup({
     Email : new FormControl("", Validators.required),
@@ -43,7 +41,6 @@ export class NavbarComponent implements OnInit {
       this.isSignin();
     });
     this.service.subscriber1$.subscribe(data => {
-      console.log("show false");
       this.show = data as boolean;
     });
     
@@ -57,7 +54,6 @@ export class NavbarComponent implements OnInit {
     this.service.signInWithFacebook()
   .then(res => {
     this.user = { ...res };
-    //console.log(user);
 
     let login = new SocialLoginUser();
     login.name = this.user.firstName;
@@ -67,22 +63,21 @@ export class NavbarComponent implements OnInit {
     login.id = this.user.id;
     login.provider = this.user.provider;
     
-    this.service.socialLogin(login).subscribe(
-      (data : Token) => {
+    this.service.socialLogin(login).subscribe({
+      next: (data : Token) => {
         localStorage.setItem('token', data.token);
         this.isSignin();
         this.router.navigateByUrl('/dashboard');
       },
-      error => {
-          this.toastr.error('Incorrect email or password.', 'Authentication failed.');
+      error: (error) => {
+          this.toastr.error('Neispravno korisnicko ime ili lozinka.');
       }
-    );
+    });
 
   }, error => console.log(error))
   }
 
   isSignin() {
-    console.log("isSignin")
     if (localStorage.getItem('token') != null){
       this.show = true;
       const temp = localStorage.getItem('token');
@@ -92,8 +87,8 @@ export class NavbarComponent implements OnInit {
       this.role = this.decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
 
       if(this.role != 'social'){
-        this.service.getImage().subscribe(
-          (data) =>{
+        this.service.getImage().subscribe({
+          next: (data) =>{
             if(data !== null){
               let objectURL = URL.createObjectURL(data); 
               this.profilePicture = this.sanitizer.bypassSecurityTrustUrl(objectURL);
@@ -101,10 +96,10 @@ export class NavbarComponent implements OnInit {
             else
             this.profilePicture = "../../../assets/images/profile-pic-placeholder.png";
           },
-          error =>{
+          error: (error) =>{
             this.profilePicture = "../../../assets/images/profile-pic-placeholder.png";
           }
-        );
+        });
       }
       else{
         this.service.getSocialImage().subscribe({
@@ -134,24 +129,24 @@ export class NavbarComponent implements OnInit {
       login.email = this.loginForm.controls['Email'].value;
       login.password = this.loginForm.controls['Password'].value;
 
-      this.service.login(login).subscribe(
-        (data : Token) => {
+      this.service.login(login).subscribe({
+        next: (data : Token) => {
           if(data === null){
-            this.toastr.error('Incorrect email or password.', 'Authentication failed.');
+            this.toastr.error('Neispravno korisnicko ime ili lozinka.');
             return;
           }
           localStorage.setItem('token', data.token);
           this.isSignin();
           this.router.navigateByUrl('/dashboard');
         },
-        error => {
-            this.toastr.error('Incorrect email or password.', 'Authentication failed.');
+        error: (error) => {
+            this.toastr.error('Neispravno korisnicko ime ili lozinka.');
         }
-      );
+      });
       this.loginForm.reset();
     }
     else{
-      this.toastr.info('Didnt input email or password.', 'Log in failed.');
+      this.toastr.info('Niste uneli korisnicko ime ili lozinku.');
       this.loginForm.reset();
     }
   }
@@ -160,7 +155,6 @@ export class NavbarComponent implements OnInit {
     this.profilePicture = "";
     localStorage.removeItem('token');
     this.router.navigateByUrl('/').then(() =>{
-      console.log("reload");
       window.location.reload();
     });
     

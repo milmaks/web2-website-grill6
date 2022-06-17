@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Web2Project.Dto;
 using Web2Project.Infrastructure;
 using Web2Project.Interfaces;
@@ -21,10 +23,10 @@ namespace Web2Project.Services
             _mapper = mapper;
             _dbContext = dbContext;
         }
-        public List<OrderDto> GetAllOrders()
+        public async Task<List<OrderDto>> GetAllOrders()
         {
-            List<ProductInOrder> products = _dbContext.ProductInOrder.ToList();
-            return _mapper.Map<List<OrderDto>>(_dbContext.Orders.ToList());
+            List<ProductInOrder> products = await _dbContext.ProductInOrder.ToListAsync();
+            return _mapper.Map<List<OrderDto>>(await _dbContext.Orders.ToListAsync());
         }
 
         public NewOrderDto NewOrder(NewOrderDto newOrderDto)
@@ -84,7 +86,7 @@ namespace Web2Project.Services
         public List<OrderDto> GetOrdersByEmail(string email)
         {
             List<ProductInOrder> products = _dbContext.ProductInOrder.ToList();
-            return _mapper.Map<List<OrderDto>>(_dbContext.Orders.Where(order => order.BuyerEmail == email || order.DeliveryEmail == email));
+            return _mapper.Map<List<OrderDto>>(_dbContext.Orders.Where(order => (order.BuyerEmail == email || order.DeliveryEmail == email) && order.DeliveryEmail != null));
         }
 
         public OrderDto GetActiveOrder(string email)

@@ -13,22 +13,24 @@
     <div class="row m-0">
         <div *ngFor="let del of deliveryUsers">
             <div class=" d-flex align-items-center">
-                <div class="col-lg-4">
-                    <h3 >{{del.email}}</h3>
+                <div class="col-lg-4" style="text-align: left; align-content: center; align-items: center;">
+                    <h3 style="margin: 0;">{{del.email}}</h3>
                 </div>  
                 <div class="col-lg-4">
                     <div *ngIf="del.status == 0">
                         <form>
-                            <button class="btn btn-primary btn-lg" style="background-color: green;" (click)="onAllow(del.email)" type="submit" >Prihvati</button>
+                            <button class="btn btn-primary btn-lg" style="background-color: green; height: 40px; padding: 3px;" (click)="onAllow(del.email)" type="submit" >Prihvati</button>
                             &nbsp;
-                            <button class="btn btn-primary btn-lg" style="background-color: red;" (click)="onDeny(del.email)" type="submit" >Odbij</button>
+                            <button class="btn btn-primary btn-lg" style="background-color: red; height: 40px; padding: 3px;" (click)="onDeny(del.email)" type="submit" >Odbij</button>
                         </form>
                     </div>
-                    <div *ngIf="del.status == 1">
-                        <p style="color: green;">Prihvacen</p>
+                    <div *ngIf="del.status == 1" style="flex: 1; display: flex; align-content: center; align-items: center;">
+                        <h3 style="color: green; margin: 0;">&nbsp;Prihvacen&nbsp;&nbsp;&nbsp;</h3>
+                        <button class="btn btn-primary btn-lg" style="background-color: red; height: 40px; padding: 3px; margin: 0;" (click)="onDeny(del.email)" type="submit" >Odbij</button>
                     </div>
-                    <div *ngIf="del.status == 2">
-                        <p style="color: red;">Odbijen</p>
+                    <div *ngIf="del.status == 2" style="flex: 1; display: flex;">
+                        <h3 style="color: red;margin: 0;">&nbsp;Odbijen&nbsp;&nbsp;&nbsp;&nbsp;</h3>
+                        <button class="btn btn-primary btn-lg" style="background-color: green; height: 40px; padding: 3px;" (click)="onAllow(del.email)" type="submit" >Prihvati</button>
                     </div>  
                 </div>
             </div>

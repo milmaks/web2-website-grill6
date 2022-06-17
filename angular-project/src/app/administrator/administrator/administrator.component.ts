@@ -37,29 +37,30 @@ export class AdministratorComponent implements OnInit {
     this.foodItems = [];
     this.foodItemsMap = new Map<number,Product>(); 
 
-    this.service.getDeliveryUsers().subscribe(
-      (data : Delivery[]) => {
+    this.service.getDeliveryUsers().subscribe({
+      next: (data : Delivery[]) => {
         this.deliveryUsers = data;
       },
-      error => {
-        this.toastr.error(error.error, 'Getting informations failed.');
-      });
+      error: (error) => {
+        this.toastr.error(error.error, 'Preuzimanje informacija o korisniku neuspesno.');
+      }
+    });
 
     // get all products for order
-    this.userservice.getAllProducts().subscribe(
-      (data) => {
+    this.userservice.getAllProducts().subscribe({
+      next: (data) => {
         for(let p of data){
           this.foodItems.push(new ProductsInOrder(p.id,0));
           this.foodItemsMap.set(p.id,p);
         }
       },
-      (error) => {
-        console.log("error")
+      error: (error) => {
+        this.toastr.error(error.error, 'Preuzimanje proizvoda sa menija neuspesno.');
       }
-    );
+    });
 
-    this.service.getAllOrders().subscribe(
-      (data : Order[]) => {
+    this.service.getAllOrders().subscribe({
+      next: (data : Order[]) => {
         this.orders = data;
         this.now = new Date();
         for(let o of this.orders){
@@ -71,38 +72,40 @@ export class AdministratorComponent implements OnInit {
           }
         }
       },
-      error => {
-        this.toastr.error(error.error, 'Getting informations failed.');
+      error: (error) => {
+        this.toastr.error(error.error, 'Preuzimanje porudzbina neuspesno.');
       }
-    );
+    });
   }
 
   onAllow(email:string){
     let delivery:Delivery = new Delivery();
     delivery.email = email;
     delivery.status = 1;
-    this.service.changeDeliveryUser(delivery).subscribe(
-      (data) => {
-        this.toastr.success("User\'s status changed succesfuly","Delivery user change");
+    this.service.changeDeliveryUser(delivery).subscribe({
+      next: (data) => {
+        this.toastr.success("Dostavljacev status je promenjen uspenso");
         this.ngOnInit();
       },
-      error => {
-        this.toastr.error(error.error, "Delivery user change");
-      });
+      error: (error) => {
+        this.toastr.error(error.error, "Nije moguce promeniti status dostavljaca");
+      }
+    });
   }
 
   onDeny(email:string){
     let delivery:Delivery = new Delivery();
     delivery.email = email;
     delivery.status = 2;
-    this.service.changeDeliveryUser(delivery).subscribe(
-      (data) => {
-        this.toastr.success("User\'s status changed succesfuly","Delivery user change");
+    this.service.changeDeliveryUser(delivery).subscribe({
+      next: (data) => {
+        this.toastr.success("Dostavljacev status je promenjen uspenso");
         this.ngOnInit();
       },
-      error => {
-        this.toastr.error(error.error, "Delivery user change");
-      });
+      error: (error) => {
+        this.toastr.error(error.error, "Nije moguce promeniti status dostavljaca");
+      }
+    });
   }
 
   onSubmitAdd(){
@@ -111,16 +114,16 @@ export class AdministratorComponent implements OnInit {
     newProduct.price = this.addNewProductForm.controls['Price'].value;
     newProduct.ingredients = this.addNewProductForm.controls['Ingredients'].value;
 
-    this.service.addNewProduct(newProduct).subscribe(
-      (data) => {
-        this.toastr.success("New product",(data.name) + " added succesfuly");
+    this.service.addNewProduct(newProduct).subscribe({
+      next: (data) => {
+        this.toastr.success("Novi proizvod",(data.name) + " uspesno dodat");
         this.addNewProductForm.reset();
         this.ngOnInit();
       },
-      error => {
-        console.log(error.error);
-        this.toastr.error(error.error, "New product");
-      });
+      error: (error) => {
+        this.toastr.error("Neuspesno dodavanje novog proizvoda");
+      }
+    });
   }
 
 }

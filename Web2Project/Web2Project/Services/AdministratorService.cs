@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Web2Project.Dto;
 using Web2Project.Infrastructure;
 using Web2Project.Interfaces;
@@ -59,9 +61,9 @@ namespace Web2Project.Services
             return true;
         }
 
-        public List<DeliveryDto> GetAllDeliveryUsers()
+        public async Task<List<DeliveryDto>> GetAllDeliveryUsers()
         {
-            return _mapper.Map<List<DeliveryDto>>(_dbContext.Deliveries.ToList());
+            return _mapper.Map<List<DeliveryDto>>(await _dbContext.Deliveries.ToListAsync());
         }
     }
 }

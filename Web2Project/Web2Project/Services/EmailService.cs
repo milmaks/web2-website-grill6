@@ -70,7 +70,6 @@ namespace Web2Project.Services
                 {
                     //log an error message or throw an exception, or both.
                     Trace.WriteLine(e.Message);
-                    //throw;
                 }
                 finally
                 {

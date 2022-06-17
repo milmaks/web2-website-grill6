@@ -160,6 +160,7 @@
         </mat-panel-description>
       </mat-expansion-panel-header>
 
+      <ng-container *ngIf="previousOrders.length; else noPreviousOrders">
       <div class="card-body p-md-3">
         <div class="row">
             <div class="col-sm">
@@ -206,6 +207,9 @@
             </div>
         </ng-container>
       </div>
-
+    </ng-container>
+    <ng-template #noPreviousOrders>
+        <p>Nemate prethodne porudzbine</p>
+    </ng-template>
     </mat-expansion-panel>
 </mat-accordion>
