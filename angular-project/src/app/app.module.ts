@@ -70,13 +70,13 @@ import { SocialLoginModule, SocialAuthServiceConfig, FacebookLoginProvider, Goog
           {
             id: FacebookLoginProvider.PROVIDER_ID,
             provider: new FacebookLoginProvider(
-              '761816601515091'
+              '{FACEBOOK_ID}'
             )
           },
           {
             id: GoogleLoginProvider.PROVIDER_ID,
             provider: new GoogleLoginProvider(
-              '1036629619164-i5i29pkd87dooqqdiog8ud46ddbpui98.apps.googleusercontent.com'
+              '{GOOGLE_CLIENTAUTH_ID}'
             )
           }
         ],

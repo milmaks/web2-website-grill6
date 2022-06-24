@@ -95,22 +95,13 @@ namespace Web2Project
                };
            });
 
-            //services.AddAuthentication()
-            //.AddGoogle("google", opt =>
-            //{
-            //    var googleAuth = Configuration.GetSection("Authentication:Google");
-            //    opt.ClientId = googleAuth["ClientId"];
-            //    opt.ClientSecret = googleAuth["ClientSecret"];
-            //    opt.SignInScheme = IdentityConstants.ExternalScheme;
-            //});
-
             services.AddCors(options =>
             {
                 options.AddPolicy(name: _cors, builder => {
                     builder.WithOrigins("http://localhost:4200")//Ovde navodimo koje sve aplikacije smeju kontaktirati nasu,u ovom slucaju nas Angular front
-                           .AllowAnyHeader()
-                           .AllowAnyMethod()
-                           .AllowCredentials();
+                            .AllowAnyHeader()
+                            .AllowAnyMethod()
+                            .AllowCredentials();
                 });
             });
 
